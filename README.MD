@@ -15,5 +15,12 @@ Framework integrato per eseguire **VQE e QPE**, pensato per testare algoritmi di
 
 ## Structure
 ```
-.\qpe│   ├── qpe_code│   ├── qpe_results│   └── unitary_matrices│
-.\vqe│   ├── vqe_code│   ├── vqe_results│   └── molecules```
+.\qpe
+│   ├── qpe_code
+│   ├── qpe_results
+│   └── unitary_matrices
+│
+.\vqe
+│   ├── vqe_code
+│   ├── vqe_results
+│   └── molecules```
