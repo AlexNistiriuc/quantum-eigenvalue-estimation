@@ -52,8 +52,3 @@ def print_eigen_decomposition(U: np.ndarray):
         print(f"   Dominant basis state ≈ |{format(basis_index, formatter)}>")
         print(f"   Eigenvector (amplitudes): {np.round(vec_norm, 3)}\n")
 
-
-#example
-n_qubits = 3
-U, phases = build_diag_unitary(n_qubits)
-print_eigen_decomposition(U)

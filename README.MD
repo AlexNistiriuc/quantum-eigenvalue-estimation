@@ -1,18 +1,19 @@
-# Quantum VQE Simulator for Molecular Ground States
+# Quantum Simulation Framework
 
-Simulates the **ground state energy** of simple molecules (H₂, LiH, …) using the **Variational Quantum Eigensolver (VQE)** with **Qiskit**.
+Framework integrato per eseguire **VQE e QPE**, pensato per testare algoritmi di simulazione quantistica.
 
 ## 🔹 Features
-
-- Automatic construction of **parametrized ansatz** (`TwoLocal` or `UCCSD`) for quantum circuits.  
-- Measurement of **Pauli strings** with optimization to reuse counts.  
-- Accurate calculation of **expectation values** for qubit Hamiltonians.  
-- Support for multiple molecules via JSON Hamiltonian files.  
-- Classical optimizers can be tested on parametrized circuits.  
+- Interfaccia unificata per eseguire sia **VQE** che **QPE**.  
+- Gestione di **file Hamiltoniani** e **unitari** in formato JSON.  
+- Simulatore interno compatibile con **Qiskit Aer**.  
+- Supporto per **analisi grafica** dei risultati (energie, fasi, distribuzioni).
 
 ## 💡 Key Concepts
+- Architettura ibrida **quantum-classical** per simulazione di sistemi fisici.  
+- **Compatibilità estesa** tra algoritmi variazionali e di stima di fase.  
+- **Benchmarking** tra metodi di calcolo di autovalori e autostati.
 
-- **Wave function parametrization** through ansatz.  
-- **Expectation values** for Hamiltonians decomposed into Pauli strings.  
-- **Circuit optimization** to reduce measurement overhead.  
-- VQE **convergence analysis** and comparison with analytical ground state energy.
+## Structure
+```
+.\qpe│   ├── qpe_code│   ├── qpe_results│   └── unitary_matrices│
+.\vqe│   ├── vqe_code│   ├── vqe_results│   └── molecules```

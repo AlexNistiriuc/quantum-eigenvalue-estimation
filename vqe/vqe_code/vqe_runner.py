@@ -13,14 +13,22 @@ def run_vqe(H_dict, num_qubits, file, num_spatial_orbitals, num_elec, shots):
     initial_params: Initial array of parameters
     """
 
-    # Create ansatz once
-    print(f"....Creating ansatz....")
-    # ansatz = create_TwoLocal(file, num_qubits=num_qubits, reps=3)
-    ansatz = create_UCCSD(file, num_spatial_orbitals, num_elec)
-    ansatz.add_register(ClassicalRegister(num_qubits, 'c'))
+    # Create ansatz
+    while True:
+        ansatz = input("Which ansatz do you wanna use?\n\t1. TwoLocal\n\t2. UCCSD\nAnswer: ")
+        if ansatz in ["1", "2"]:
+            break
+        print(f"Error: {ansatz} is not a possible choise!\n")
 
-    # initial_parameters = np.random.normal(0, 0.1, ansatz.num_parameters)  da usare con TwoLocal
-    initial_parameters = np.zeros(ansatz.num_parameters)    # da usare con UCCSD
+    print(f"....Creating ansatz....")
+    if ansatz=="1":
+        ansatz = create_TwoLocal(file, num_qubits=num_qubits, reps=3)
+        ansatz.add_register(ClassicalRegister(num_qubits, 'c'))
+        initial_parameters = np.random.normal(0, 0.1, ansatz.num_parameters)
+    elif ansatz=="2":
+        ansatz = create_UCCSD(file, num_spatial_orbitals, num_elec)
+        ansatz.add_register(ClassicalRegister(num_qubits, 'c'))
+        initial_parameters = np.zeros(ansatz.num_parameters)    # da usare con UCCSD
 
     energies = []
     n_rep = 0

@@ -1,3 +1,2 @@
-venv/
-__pycache__/
-code/__pycache__/
+qpe/qpe_code/__pycache__/
+vqe/vqe_code/__pycache__/
