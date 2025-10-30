@@ -27,11 +27,11 @@ def get_input():
     if unitary == "1":
         unitary = "small"
     elif unitary == "2":
-        unitary == "medium"
+        unitary = "medium"
     elif unitary == "3":
         unitary = "large"
     elif unitary == "4":
-        unitary == "extra_large"
+        unitary = "extra_large"
 
     filename = os.path.join("..", "unitary_matrices", f"{unitary}.json")
     print(f"Loading molecule data from: {filename}")

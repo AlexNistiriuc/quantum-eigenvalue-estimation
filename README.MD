@@ -23,4 +23,5 @@ Framework integrato per eseguire **VQE e QPE**, pensato per testare algoritmi di
 .\vqe
 │   ├── vqe_code
 │   ├── vqe_results
-│   └── molecules```
+│   └── molecules
+```
