@@ -18,35 +18,58 @@ def get_input():
         except ValueError:
             print(f"Error: {shots} is not an integer value!.\n")
 
-    while True:
-        unitary = input("Which unitary matrix do you wanna test?\n\t1. small (4x4)\n\t2. medium (16x16)\n\t3. large (64x64)\n\t4. extra-large (256x256)\nAnswer: ")
-        if unitary in ["1", "2", "3", "4"]:
-            break
-        print(f"Error: {unitary} is not a possible choise!\n")
+    # while True:
+    #     unitary = input("Which unitary matrix do you wanna test?\n\t1. small (4x4)\n\t2. medium (16x16)\n\t3. large (64x64)\n\t4. extra-large (256x256)\nAnswer: ")
+    #     if unitary in ["1", "2", "3", "4"]:
+    #         break
+    #     print(f"Error: {unitary} is not a possible choise!\n")
 
-    if unitary == "1":
-        unitary = "small"
-    elif unitary == "2":
-        unitary = "medium"
-    elif unitary == "3":
-        unitary = "large"
-    elif unitary == "4":
-        unitary = "extra_large"
+    # if unitary == "1":
+    #     unitary = "small"
+    # elif unitary == "2":
+    #     unitary = "medium"
+    # elif unitary == "3":
+    #     unitary = "large"
+    # elif unitary == "4":
+    #     unitary = "extra_large"
 
-    filename = os.path.join("..", "unitary_matrices", f"{unitary}.json")
-    print(f"Loading molecule data from: {filename}")
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            matrix = json.load(file)
-            print(f"Matrix \"{unitary}\" loaded successfully!")
-    except FileNotFoundError:
-        print(f"Error: Data file for matrix \"{unitary}\" not found.")
-    except json.JSONDecodeError:
-        print(f"Error: {filename} is not a valid JSON file.")
+    # filename = os.path.join("..", "unitary_matrices", f"{unitary}.json")
+    # print(f"Loading molecule data from: {filename}")
+    # try:
+    #     with open(filename, 'r', encoding='utf-8') as file:
+    #         matrix = json.load(file)
+    #         print(f"Matrix \"{unitary}\" loaded successfully!")
+    # except FileNotFoundError:
+    #     print(f"Error: Data file for matrix \"{unitary}\" not found.")
+    # except json.JSONDecodeError:
+    #     print(f"Error: {filename} is not a valid JSON file.")
 
-    U = np.array([[complex(x) for x in row] for row in matrix["U"]], dtype=np.complex128)
-    psi = np.array([complex(x) for x in matrix["psi"]], dtype=np.complex128)
-    psi /= np.linalg.norm(psi)
+    # U = np.array([[complex(x) for x in row] for row in matrix["U"]], dtype=np.complex128)
+    # psi = np.array([complex(x) for x in matrix["psi"]], dtype=np.complex128)
+    # psi /= np.linalg.norm(psi)
+
+    U = np.array([
+        [0.0026178144+0.5460550815j, 0.6058816515-0.0447616024j, -0.4707253703+0.3302756766j, -0.0398119521+0.0217124394j],
+        [-0.1176999530-0.2325002357j, 0.6300340009+0.0488685476j, 0.5162626984-0.0968122797j, -0.4764436722+0.1728034150j],
+        [-0.6616954539+0.1257949327j, -0.0679664289+0.0165101438j, 0.3733384687+0.4914243822j, 0.3723108323+0.1481480658j],
+        [0.3987084427-0.1458550494j, 0.2915109863+0.3764334877j, 0.0842049672-0.0739310482j, 0.6482503054+0.4003652354j]
+    ], dtype=np.complex128)
+
+    # Eigen-decomposition
+    evals, evecs = np.linalg.eig(U)
+
+    # Normalizziamo gli autostati
+    evecs = evecs / np.linalg.norm(evecs, axis=0)
+
+    print("Autovalori (fasi):")
+    for j, lam in enumerate(evals):
+        phi_j = (np.angle(lam) / (2*np.pi)) % 1
+        print(f"λ_{j} = {lam}, φ_{j} = {phi_j:.4f}")
+        
+    # Scegliamo autostati 0, 1, 2
+    c0, c1, c2 = 0.2, 0.3, 0.5  # coefficenti
+    psi = c0*evecs[:,0] + c1*evecs[:,1] + c2*evecs[:,2]
+    psi /= np.linalg.norm(psi)  # normalizzazione
 
     while True:
         n = input("How many phase registers do you want to test with? ")
