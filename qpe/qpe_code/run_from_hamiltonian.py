@@ -4,12 +4,16 @@ from pathlib import Path
 repo_root = Path(__file__).resolve().parents[2] # repo root: quantum-vqe-simulator
 sys.path.insert(0, str(repo_root))
 
+import time
 import argparse
 import os
 import numpy as np
+from pathlib import Path
 from qpe.qpe_code.io_utils import load_matrix_spec, build_unitary_from_hamiltonian
 from qpe.qpe_code.matrix_utils import eigendecompose, unitary_eigenphases
 from qpe.qpe_code.qpe_runner import run_qpe  
+from qpe_graph import plot
+
 
 def is_power_of_two(n):
     return (n & (n - 1) == 0) and n > 0
@@ -20,12 +24,15 @@ def main():
     parser.add_argument('--shots', type=int, default=1024, help='Number of shots (measurements).')
     parser.add_argument('--psi-index', type=int, default=None, help='Override psi_index from file (computational basis).')
     parser.add_argument('--evec-index', type=int, default=0, help='Run QPE on the k-th eigenvector of H (after sorting eigenvalues).')
-    parser.add_argument('--run-all-eigenstates', default=False, action='store_true', help='Run QPE for every eigenstate of H (slow for large dim).')
-    parser.add_argument('--t', type=float, default=None, help='Evolution time t (overrides JSON t = 1.0 if provided).')
-    parser.add_argument('--hbar', type=float, default=None, help='Reduced Planck constant (overrides JSON hbar = 1.0 if provided).')
+    parser.add_argument('--run-all-eigenstates', default=True, action='store_true', help='Run QPE for every eigenstate of H (slow for large dim).')
+    parser.add_argument('--t', type=float, default=0.6, help='Evolution time t (overrides JSON t = 1.0 if provided).')
+    parser.add_argument('--hbar', type=float, default=1, help='Reduced Planck constant (overrides JSON hbar = 1.0 if provided).')
     args = parser.parse_args()
 
-    path = os.path.join("..", "..", "molecules", "Hamiltonian_8x8_example.json")
+
+    base_dir = Path(__file__).resolve().parent
+    path = base_dir.parent.parent / "molecules" / "Hamiltonian_8x8_example.json"
+
     print(f"Loading matrix specification from: {path}")
 
     spec = load_matrix_spec(path)
@@ -40,6 +47,13 @@ def main():
     dim = spec['dim']
     if not is_power_of_two(dim):
         raise ValueError(f"Dimension {dim} is not a power of two. QPE circuit expects 2^m dimension.")
+    
+
+    shots = args.shots
+    n = args.n
+
+
+    
 
     m = int(np.log2(dim))
     print(f"System qubits (m): {m} (dim={dim})")
@@ -118,7 +132,7 @@ def main():
         psi = V[:, k]
         print(f"Using eigenvector index {k} as initial psi (normalized):")
         print(np.round(psi, 6))
-    '''
+
     
     # If requested, run QPE for every eigenstate
     if args.run_all_eigenstates:
@@ -128,8 +142,18 @@ def main():
         for k in range(dim):
             psi_k = V[:, k]
             print(f"\n=== Running QPE for eigenstate {k} ===")
-            counts_k, circuit_k = run_qpe(psi_k, U, n=args.n, shots=args.shots)
+
+            # create output file path for this eigenstate and ensure parent dir exists
+            timestamp = time.strftime("%Y-%m-%d_%H.%M.%S")
+            base_dir = Path(__file__).resolve().parent
+            print(f"Base directory for results: {base_dir}")
+            output_file = base_dir.parent / "qpe_results" / "Hamiltonian_8x8" / f"{timestamp}_eigenstate_{k}.png"
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+
+            counts_k, circuit_k = run_qpe(psi_vector=psi_k, U=U, n=args.n, shots=args.shots)
+
             # compute estimated phase
+            all_k = np.arange(0, 2**args.n)
             counts_array_k = np.zeros(2**args.n, dtype=int)
             for bitstring, c in counts_k.items():
                 counts_array_k[int(bitstring, 2)] = c
@@ -138,6 +162,9 @@ def main():
             print(f"Eigenstate {k}: estimated phase = {best_k}/{2**args.n} = {phi_est:.6f}")
             print(f"Counts: {counts_array_k}")
             results.append((k, best_k, phi_est, counts_array_k))
+
+            # pass the computed all_k and save to the output_file path
+            plot(counts_array_k, best_k=best_k, all_k=all_k, phi_est=phi_est, n=args.n, shots=args.shots, output_dir=str(output_file))
         # results contains tuples for each eigenstate if needed later
     else:
         # run QPE for the chosen psi (either default, psi-index or evec-index)
@@ -156,6 +183,6 @@ def main():
         except Exception:
             # some backends/circuit objects may not support textual drawing in this environment
             pass
-    '''
+
 if __name__ == "__main__":
     main()

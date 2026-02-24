@@ -3,6 +3,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+from pathlib import Path
+
 
 def plot(counts, best_k, all_k, phi_est, n, shots, output_dir):
     """
@@ -102,11 +104,10 @@ def plot(counts, best_k, all_k, phi_est, n, shots, output_dir):
     plt.subplots_adjust(bottom=0.2)
     
     # Save high-quality plot
-    filepath = os.path.join(output_dir, "qpe_results.png")
-    plt.savefig(filepath, dpi=300, bbox_inches='tight', 
+    plt.savefig(output_dir, dpi=300, bbox_inches='tight',
                 facecolor='white', edgecolor='none')
     
-    print(f"Plot saved: {filepath}")
+    print(f"Plot saved: {output_dir}")
     print('=' * 60)
     
     plt.show()
