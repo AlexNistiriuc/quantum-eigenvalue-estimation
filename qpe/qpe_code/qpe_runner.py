@@ -39,7 +39,6 @@ def run_qpe(psi_vector: np.array,
         n: int, accuracy, number of phase registers
     """
 
-    print("....Creating circuit....")
     # local variables
     m = int(np.ceil(np.log2(len(U))))   # number of state regiter
     U_gate = UnitaryGate(U, label='U')               # unitary operation as Qiskit's gate
@@ -74,7 +73,6 @@ def run_qpe(psi_vector: np.array,
     qc.measure(phase_reg, c_reg)
 
     # simulations
-    print(f"....Starting simulations....")
     counts = simulator(qc, shots=shots)
 
     return counts, qc

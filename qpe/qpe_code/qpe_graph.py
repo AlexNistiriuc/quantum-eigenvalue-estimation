@@ -109,7 +109,5 @@ def plot(counts, best_k, all_k, phi_est, n, shots, output_dir):
     
     print(f"Plot saved: {output_dir}")
     print('=' * 60)
-    
-    plt.show()
-    
+
     return phi_est
