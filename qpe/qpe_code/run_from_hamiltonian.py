@@ -23,9 +23,10 @@ def main():
     parser = argparse.ArgumentParser(description="Run QPE from a Hamiltonian or Unitary JSON file.")
     parser.add_argument('--n', type=int, default=4, help='Number of phase (ancilla) qubits.')
     parser.add_argument('--shots', type=int, default=1024, help='Number of shots (measurements).')
-    parser.add_argument('--psi-index', type=int, default=None, help='Override psi_index from file (computational basis).')
     parser.add_argument('--evec-index', type=int, default=0, help='Run QPE on the k-th eigenvector of H (after sorting eigenvalues).')
-    parser.add_argument('--run-all-eigenstates', default=True, action='store_true', help='Run QPE for every eigenstate of H (slow for large dim).')
+    parser.add_argument('--run-all-eigenstates', default=False, action='store_true', help='Run QPE for every eigenstate of H (slow for large dim).')
+    parser.add_argument('--psi-coefs', type=str, default="1,0,0,1,0,0,0,0", help='Override psi by a comma-separated list of complex coefficients (e.g. "1,0.5+0.5j,0,...").')
+    parser.add_argument('--psi-eig', type=str, default="0,1,2,3,4,5,6,7", help='Override psi by a comma-separated list of eigenvector indices (e.g. "0,2" for the 1st and 3rd eigenvectors).')
     parser.add_argument('--t', type=float, default=0.6, help='Evolution time t (overrides JSON t = 1.0 if provided).')
     parser.add_argument('--hbar', type=float, default=1, help='Reduced Planck constant (overrides JSON hbar = 1.0 if provided).')
     args = parser.parse_args()
@@ -62,9 +63,6 @@ def main():
 
     shots = args.shots
     n = args.n
-
-
-    
 
     m = int(np.log2(dim))
     print(f"System qubits (m): {m} (dim={dim})")
@@ -130,27 +128,6 @@ def main():
                 print(f"\nSuggested t_max to avoid phase wrapping: DeltaE_max = {DeltaE_max:.6e}; t_max = {t_max:.6e} (hbar={h_bar})")
                 if t >= t_max:
                     print("WARNING: chosen t >= t_max -> some phases may wrap modulo 2π.")
-
-
-    # Option: override psi by computational basis index
-    if args.psi_index is not None:
-        idx = args.psi_index
-        if idx < 0 or idx >= dim:
-            raise ValueError("psi-index out of range")
-        psi = np.zeros(dim, dtype=np.complex128)
-        psi[idx] = 1.0
-
-    # Option: override psi by eigenvector index (requires H)
-    if args.evec_index is not None:
-        if spec.get('kind') != 'hamiltonian' or V is None:
-            raise ValueError('--evec-index requires the input to be a Hamiltonian with computable eigenvectors')
-        k = args.evec_index
-        if k < 0 or k >= dim:
-            raise ValueError('--evec-index out of range')
-        psi = V[:, k]
-        print(f"Using eigenvector index {k} as initial psi (normalized):")
-        print(np.round(psi, 6))
-
     
     # If requested, run QPE for every eigenstate
     if args.run_all_eigenstates:
@@ -213,6 +190,20 @@ def main():
             with redirect_stdout(lf):
                 print("=== Single run ===")
                 print(f"Output directory: {results_root}")
+                if args.psi_coefs is not None and args.psi_eig is not None:
+                    print(f"Overriding psi with custom coefficients: {args.psi_coefs} for eigenvector indices: {args.psi_eig} ")
+                    psi_coefs = [complex(c.strip()) for c in args.psi_coefs.split(',')]
+                    psi_eig_indices = [int(i.strip()) for i in args.psi_eig.split(',')]
+                    if len(psi_coefs) != len(psi_eig_indices):
+                        raise ValueError("Length of psi-coefs and psi-eig must match")
+                    if len(psi_coefs) != dim:
+                            print(f"ERROR: --psi-coefs must contain exactly {dim} coefficients (one per eigenvector) when --psi-eig is not used.")
+                            print("Example: --psi-coefs 'c0,c1,...,c{dim-1}'")
+                            raise ValueError("Wrong number of coefficients for --psi-coefs")
+                    psi = np.zeros(dim, dtype=np.complex128)
+                    for coef, eig_idx in zip(psi_coefs, psi_eig_indices):
+                        psi += coef * V[:, eig_idx] # I take all the values on the column eig_idx
+                    
                 counts, circuit = run_qpe(psi, U, n=args.n, shots=args.shots)
 
                 # compute estimated phase from counts

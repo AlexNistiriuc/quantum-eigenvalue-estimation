@@ -2,6 +2,7 @@
 
 import numpy as np
 import qiskit as qk
+import warnings
 from typing import Tuple
 from qiskit.circuit.library import UnitaryGate, QFT
 from qiskit_aer import AerSimulator
@@ -50,6 +51,18 @@ def run_qpe(psi_vector: np.array,
     qc = qk.QuantumCircuit(phase_reg, state_reg, c_reg)     # quantum circuit
 
     # initialize the state register as psi
+    # Defensive normalization: Qiskit requires the statevector to be normalized
+    psi_vector = np.asarray(psi_vector, dtype=np.complex128)
+    norm = np.linalg.norm(psi_vector)
+    if norm == 0:
+        raise ValueError("Provided psi vector has zero norm")
+    # If norm differs from 1 beyond a tiny tolerance, normalize and warn
+    if not np.isclose(norm, 1.0, atol=1e-12):
+        warnings.warn(f"psi_vector is not normalized (norm={norm}). Normalizing before initialize.")
+        print(f"Original psi_vector: {psi_vector}")
+        psi_vector = psi_vector / norm
+        print(f"Normalized psi_vector: {psi_vector}")
+
     qc.initialize(psi_vector, state_reg)
 
     # put an Hadamard's gate on each phase register
