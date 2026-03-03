@@ -5,9 +5,19 @@ import time
 import json
 import numpy as np
 from contextlib import redirect_stdout
-from qpe_graph import plot
-from simple_unitary import build_diag_unitary as build
-from qpe_runner import run_qpe
+from pathlib import Path
+
+try:
+    from .qpe_graph import plot
+    from .qpe_runner import run_qpe
+except ImportError:
+    from qpe_graph import plot
+    from qpe_runner import run_qpe
+
+
+BASE_DIR = Path(__file__).resolve().parents[1]
+UNITARY_DIR = BASE_DIR.parent / "unitary_matrices"
+RESULTS_DIR = BASE_DIR / "qpe_results"
 
 def get_input():
     while True:
@@ -33,7 +43,7 @@ def get_input():
     elif unitary == "4":
         unitary = "extra_large"
 
-    filename = os.path.join("..", "unitary_matrices", f"{unitary}.json")
+    filename = UNITARY_DIR / f"{unitary}.json"
     print(f"Loading molecule data from: {filename}")
     try:
         with open(filename, 'r', encoding='utf-8') as file:
@@ -64,9 +74,9 @@ def main():
     shots, U, psi, n = get_input()
     
     timestamp = time.strftime("%Y-%m-%d_%H.%M.%S")
-    output_dir = os.path.join("..", "qpe_results", timestamp)
+    output_dir = RESULTS_DIR / timestamp
     os.makedirs(output_dir, exist_ok=True)
-    f = open(os.path.join(output_dir, "qpe_log.txt"), 'w', encoding='utf-8')
+    f = open(output_dir / "qpe_log.txt", 'w', encoding='utf-8')
 
     # simulating QPE
     print('='*50)

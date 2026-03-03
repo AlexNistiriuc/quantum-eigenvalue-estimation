@@ -26,4 +26,4 @@ def analitical_minimum_energy(H_dict, n):
     for ps in H_dict:
         H += H_dict[ps] * pstr_to_matrix(ps)
     eigenvalues = np.linalg.eigh(H)[0]
-    return eigenvalues[0]
+    return eigenvalues[0], eigenvalues[-1], H

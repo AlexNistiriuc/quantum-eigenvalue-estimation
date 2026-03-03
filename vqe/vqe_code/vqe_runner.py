@@ -2,9 +2,9 @@
 
 import numpy as np
 from qiskit import ClassicalRegister
-from ansatz_factory import create_TwoLocal, create_UCCSD
+from .ansatz_factory import create_TwoLocal, create_UCCSD
 from scipy.optimize import minimize
-from simulations import simulation
+from .simulations import simulation
 
 def run_vqe(H_dict, num_qubits, file, num_spatial_orbitals, num_elec, shots):
     """
@@ -14,11 +14,15 @@ def run_vqe(H_dict, num_qubits, file, num_spatial_orbitals, num_elec, shots):
     """
 
     # Create ansatz
-    while True:
-        ansatz = input("Which ansatz do you wanna use?\n\t1. TwoLocal\n\t2. UCCSD\nAnswer: ")
-        if ansatz in ["1", "2"]:
-            break
-        print(f"Error: {ansatz} is not a possible choise!\n")
+    if num_spatial_orbitals is None or num_elec is None:
+        print("No molecular data available. Defaulting to TwoLocal ansatz.")
+        ansatz = "1"
+    else:
+        while True:
+            ansatz = input("Which ansatz do you wanna use?\n\t1. TwoLocal\n\t2. UCCSD\nAnswer: ")
+            if ansatz in ["1", "2"]:
+                break
+            print(f"Error: {ansatz} is not a possible choise!\n")
 
     print(f"....Creating ansatz....")
     if ansatz=="1":
@@ -54,7 +58,7 @@ def run_vqe(H_dict, num_qubits, file, num_spatial_orbitals, num_elec, shots):
 
         n_rep += 1
 
-        return energy
+        return np.real(energy)
     
     
     print(f"....Starting simulations....")
