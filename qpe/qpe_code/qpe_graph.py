@@ -73,7 +73,7 @@ def plot(counts, best_k, all_k, phi_est, n, shots, output_dir):
     
     # Create information box
     info_text = f"""Estimation Results:
-• Estimated phase: φ = {phi_est:.6f}
+• Estimated phase: φ = {1 - phi_est:.6f}
 • Most probable: k = {best_k}
 • Total shots: {shots}
 • Precision: 1/2ⁿ = {1/2**n:.6f}"""

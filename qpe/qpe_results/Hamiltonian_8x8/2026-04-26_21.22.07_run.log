@@ -1,0 +1,179 @@
+Loading matrix specification from: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/molecules/Hamiltonian_8x8_example.json
+Eigenvalues E_j and phases phi_j (phi = (-E t)/(2π) mod 1):
+--- eigen 0 ---
+eigenval 0: 0.959838
+eigenvect 0: [ 9.80016e-01+0.j -1.96795e-01+0.j  2.89850e-02+0.j -9.54000e-04+0.j
+  2.40000e-05+0.j -1.00000e-06+0.j  0.00000e+00+0.j -0.00000e+00+0.j]
+> Unitary eigenvalue (from E): (0.838700857082224-0.5445923909949009j)
+--> Phase [rad]: -0.575903
+--> Phase [degree]: -33.0°
+--> Phase [in units of 2pi]: 0.908342
+
+--- eigen 1 ---
+eigenval 1: 1.955315
+eigenvect 1: [ 1.97183e-01+0.j  9.41858e-01+0.j -2.71745e-01+0.j  1.33120e-02+0.j
+ -4.39000e-04+0.j  2.20000e-05+0.j -0.00000e+00+0.j  0.00000e+00+0.j]
+> Unitary eigenvalue (from E): (0.3872135470366932-0.9219900590522994j)
+--> Phase [rad]: -1.173189
+--> Phase [degree]: -67.2°
+--> Phase [in units of 2pi]: 0.813281
+
+--- eigen 2 ---
+eigenval 2: 3.074431
+eigenvect 2: [ 2.62150e-02+0.j  2.71902e-01+0.j  9.56324e-01+0.j -1.03910e-01+0.j
+  5.43500e-03+0.j -3.72000e-04+0.j  9.00000e-06+0.j -0.00000e+00+0.j]
+> Unitary eigenvalue (from E): (-0.2704515074937078-0.9627335987148163j)
+--> Phase [rad]: -1.844658
+--> Phase [degree]: -105.7°
+--> Phase [in units of 2pi]: 0.706414
+
+--- eigen 3 ---
+eigenval 3: 4.000264
+eigenvect 3: [ 1.04300e-03+0.j  1.56420e-02+0.j  1.03595e-01+0.j  9.89304e-01+0.j
+ -1.00980e-01+0.j  1.01160e-02+0.j -3.38000e-04+0.j  8.00000e-06+0.j]
+> Unitary eigenvalue (from E): (-0.7375008375525863-0.6753462183274839j)
+--> Phase [rad]: -2.400159
+--> Phase [degree]: -137.5°
+--> Phase [in units of 2pi]: 0.618003
+
+--- eigen 4 ---
+eigenval 4: 4.971280
+eigenvect 4: [ 2.70000e-05+0.j  5.28000e-04+0.j  5.20700e-03+0.j  1.01060e-01+0.j
+  9.76366e-01+0.j -1.90737e-01+0.j  9.41700e-03+0.j -3.11000e-04+0.j]
+> Unitary eigenvalue (from E): (-0.9874138382525797-0.1581578705828717j)
+--> Phase [rad]: -2.982768
+--> Phase [degree]: -170.9°
+--> Phase [in units of 2pi]: 0.525278
+
+--- eigen 5 ---
+eigenval 5: 6.028721
+eigenvect 5: [ 1.00000e-06+0.j  2.30000e-05+0.j  3.13000e-04+0.j  9.41700e-03+0.j
+  1.90737e-01+0.j  9.76367e-01+0.j -1.01052e-01+0.j  5.12600e-03+0.j]
+> Unitary eigenvalue (from E): (-0.8889998687253885+0.4579074506996387j)
+--> Phase [rad]: 2.665953
+--> Phase [degree]: 152.7°
+--> Phase [in units of 2pi]: 0.424300
+
+--- eigen 6 ---
+eigenval 6: 7.000200
+eigenvect 6: [ 0.00000e+00+0.j  1.00000e-06+0.j  8.00000e-06+0.j  3.37000e-04+0.j
+  1.01150e-02+0.j  1.00992e-01+0.j  9.89897e-01+0.j -9.90090e-02+0.j]
+> Unitary eigenvalue (from E): (-0.4901560616019769+0.8716346914131166j)
+--> Phase [rad]: 2.083065
+--> Phase [degree]: 119.4°
+--> Phase [in units of 2pi]: 0.331530
+
+--- eigen 7 ---
+eigenval 7: 8.009951
+eigenvect 7: [0.00000e+00+0.j 0.00000e+00+0.j 0.00000e+00+0.j 8.00000e-06+0.j
+ 3.30000e-04+0.j 4.95900e-03+0.j 9.90180e-02+0.j 9.95073e-01+0.j]
+> Unitary eigenvalue (from E): (0.09344498066994937+0.9956244450532504j)
+--> Phase [rad]: 1.477215
+--> Phase [degree]: 84.6°
+--> Phase [in units of 2pi]: 0.235106
+
+Eigenvalues of U (sample): [ 0.838701-0.544592j  0.387214-0.92199j  -0.270452-0.962734j
+ -0.737501-0.675346j -0.987414-0.158158j -0.889   +0.457907j
+ -0.490156+0.871635j  0.093445+0.995624j]
+Absolute values (should be 1): [1. 1. 1. 1. 1. 1. 1. 1.]
+
+Consistency check: ||U v_j - exp(-i E_j t / hbar) v_j|| (should be ~0)
+ j= 0: resid=1.692e-16
+ j= 1: resid=1.123e-15
+ j= 2: resid=4.190e-15
+ j= 3: resid=8.256e-16
+ j= 4: resid=4.564e-15
+ j= 5: resid=2.453e-15
+ j= 6: resid=7.504e-16
+ j= 7: resid=1.059e-15
+
+Suggested t_max to avoid phase wrapping: DeltaE_max = 7.050112e+00; t_max = 8.912177e-01 (hbar=1.0)
+
+=== Eigenstate 0 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 0
+Eigenstate 0: estimated phase = 15/16 = 0.937500
+Counts: [ 38  21  11   6   3   5   6   5   2   4  13  10  12  42 381 465]
+Expected phase (from E): 0.908342
+Phase difference: 2.915782e-02
+Estimated energy from phi: E_est = -9.817477e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.07_eigenstate_0.png
+============================================================
+
+=== Eigenstate 1 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 1
+Eigenstate 1: estimated phase = 13/16 = 0.812500
+Counts: [   0    0    0    0    0    0    0    1    0    0    0    1    0 1022
+    0    0]
+Expected phase (from E): 0.813281
+Phase difference: 7.811914e-04
+Estimated energy from phi: E_est = -8.508480e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.08_eigenstate_1.png
+============================================================
+
+=== Eigenstate 2 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 2
+Eigenstate 2: estimated phase = 11/16 = 0.687500
+Counts: [  3   3   1   3   5   0   6   5  11  11  34 751 147  24  11   9]
+Expected phase (from E): 0.706414
+Phase difference: 1.891351e-02
+Estimated energy from phi: E_est = -7.199483e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.09_eigenstate_2.png
+============================================================
+
+=== Eigenstate 3 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 3
+Eigenstate 3: estimated phase = 10/16 = 0.625000
+Counts: [  0   2   0   0   1   0   0   3   5  14 980  14   4   1   0   0]
+Expected phase (from E): 0.618003
+Phase difference: 6.997106e-03
+Estimated energy from phi: E_est = -6.544985e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.09_eigenstate_3.png
+============================================================
+
+=== Eigenstate 4 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 4
+Eigenstate 4: estimated phase = 8/16 = 0.500000
+Counts: [  4   2   5   4   6  11  16  44 597 261  29  17  10   6   8   4]
+Expected phase (from E): 0.525278
+Phase difference: 2.527775e-02
+Estimated energy from phi: E_est = -5.235988e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.10_eigenstate_4.png
+============================================================
+
+=== Eigenstate 5 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 5
+Eigenstate 5: estimated phase = 7/16 = 0.437500
+Counts: [  0   4   5   2   4   9  52 898  29   6   5   3   1   3   1   2]
+Expected phase (from E): 0.424300
+Phase difference: 1.320045e-02
+Estimated energy from phi: E_est = -4.581489e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.11_eigenstate_5.png
+============================================================
+
+=== Eigenstate 6 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 6
+Eigenstate 6: estimated phase = 5/16 = 0.312500
+Counts: [  2   3   6  16  52 743 140  24  15   6   3   4   2   5   2   1]
+Expected phase (from E): 0.331530
+Phase difference: 1.903011e-02
+Estimated energy from phi: E_est = -3.272492e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.12_eigenstate_6.png
+============================================================
+
+=== Eigenstate 7 run ===
+Output directory: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8
+Using psi index: 7
+Eigenstate 7: estimated phase = 4/16 = 0.250000
+Counts: [  4   4  15  75 857  35  12   4   5   2   3   0   2   1   2   3]
+Expected phase (from E): 0.235106
+Phase difference: 1.489396e-02
+Estimated energy from phi: E_est = -2.617994e+00
+Plot saved: /Users/alexandronistiriuc/Projects/quantum-vqe-simulator/qpe/qpe_results/Hamiltonian_8x8/2026-04-26_21.22.13_eigenstate_7.png
+============================================================

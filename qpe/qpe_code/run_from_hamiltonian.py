@@ -25,7 +25,7 @@ def main():
     parser.add_argument('--shots', type=int, default=1024, help='Number of shots (measurements).')
     parser.add_argument('--evec-index', type=int, default=0, help='Run QPE on the k-th eigenvector of H (after sorting eigenvalues).')
     parser.add_argument('--run-all-eigenstates', default=False, action='store_true', help='Run QPE for every eigenstate of H (slow for large dim).')
-    parser.add_argument('--psi-coefs', type=str, default="1,0,0,1,0,0,0,0", help='Override psi by a comma-separated list of complex coefficients (e.g. "1,0.5+0.5j,0,...").')
+    parser.add_argument('--psi-coefs', type=str, default="0.5,0,0,1,0,0,0,0", help='Override psi by a comma-separated list of complex coefficients (e.g. "1,0.5+0.5j,0,...").')
     parser.add_argument('--psi-eig', type=str, default="0,1,2,3,4,5,6,7", help='Override psi by a comma-separated list of eigenvector indices (e.g. "0,2" for the 1st and 3rd eigenvectors).')
     parser.add_argument('--t', type=float, default=0.6, help='Evolution time t (overrides JSON t = 1.0 if provided).')
     parser.add_argument('--hbar', type=float, default=1, help='Reduced Planck constant (overrides JSON hbar = 1.0 if provided).')

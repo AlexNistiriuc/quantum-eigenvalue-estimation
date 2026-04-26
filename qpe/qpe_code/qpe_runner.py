@@ -42,7 +42,9 @@ def run_qpe(psi_vector: np.array,
 
     # local variables
     m = int(np.ceil(np.log2(len(U))))   # number of state regiter
-    U_gate = UnitaryGate(U, label='U')               # unitary operation as Qiskit's gate
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        U_gate = UnitaryGate(U, label='U')
 
     # create the registers
     phase_reg = qk.QuantumRegister(n, "phase")              # initial phase registers, set in |0>
@@ -73,7 +75,9 @@ def run_qpe(psi_vector: np.array,
     for k in range(n):
         number_of_gates = 2**k                                      # 2^k gates
         for i in range(number_of_gates):
-            qc.append(U_gate.control(1), [phase_reg[k]] + list(state_reg))  # U_gates on state_reg controlled by the k-th phase_reg
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", RuntimeWarning)
+                qc.append(U_gate.control(1), [phase_reg[k]] + list(state_reg))
     
     qc.barrier()
 
