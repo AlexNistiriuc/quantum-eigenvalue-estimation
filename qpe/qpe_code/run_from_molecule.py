@@ -35,7 +35,7 @@ def pauli_string_to_matrix(pstr: str) -> np.ndarray:
 
 def build_h_from_qubit_hamiltonian(qh_dict):
     # qh_dict: mapping 'IXYZ' -> coeff
-    # returns H (dense ndarray) and inferred dim
+    # returns H (dense ndarray)
     if not qh_dict:
         raise ValueError('Empty qubit_hamiltonian')
     any_key = next(iter(qh_dict.keys()))
@@ -95,7 +95,7 @@ def trotterize_unitary_from_terms(qh_dict, t: float, hbar: float = 1.0, steps: i
         U = U_step @ U
         # ri-ortogonalizza U ad ogni step per contenere l'accumulo numerico
         Q, R = np.linalg.qr(U)
-        phases = np.diag(R) / np.abs(np.diag(R))
+        phases = np.diag(R) / np.abs(np.diag(R)) #sistemo la fase del QR per mantenere unitarietà anche con errori numerici - test per accumulo di errori di fase e controllare warnings
         U = Q * phases  # preserva le fasi, forza unitarietà
 
     # diagnostica finale
