@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import time
 from contextlib import redirect_stdout
 from pathlib import Path
@@ -19,6 +20,10 @@ from vqe.vqe_code.run_from_molecule import main as run_vqe_from_molecule
 
 REPO_ROOT = Path(__file__).resolve().parent
 QPE_RESULTS_DIR = REPO_ROOT / "qpe" / "qpe_results"
+
+
+def _ensure_repo_root_cwd():
+    os.chdir(REPO_ROOT)
 
 
 def parse_args(argv=None):
@@ -126,6 +131,7 @@ def _run_vqe(args):
 
 
 def main(argv=None):
+    _ensure_repo_root_cwd()
     args = parse_args(argv)
     H, min_energy, best_cirq, energy_scale = _run_vqe(args)
 

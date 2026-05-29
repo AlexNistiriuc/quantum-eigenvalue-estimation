@@ -2,6 +2,7 @@
 from pathlib import Path
 
 import argparse
+import os
 import time
 from contextlib import redirect_stdout
 
@@ -13,9 +14,22 @@ try:
     from .qpe_runner import run_qpe
     from .qpe_graph import plot
 except ImportError:
-    from io_utils import load_json, build_unitary_from_hamiltonian
-    from qpe_runner import run_qpe
-    from qpe_graph import plot
+    import sys
+
+    repo_root = Path(__file__).resolve().parents[2]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+
+    from qpe.qpe_code.io_utils import load_matrix_spec, build_unitary_from_hamiltonian
+    from qpe.qpe_code.qpe_runner import run_qpe
+    from qpe.qpe_code.qpe_graph import plot
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _ensure_repo_root_cwd():
+    os.chdir(REPO_ROOT)
 
 
 PAULIS = {
@@ -107,6 +121,7 @@ def trotterize_unitary_from_terms(qh_dict, t: float, hbar: float = 1.0, steps: i
 
 
 def main():
+    _ensure_repo_root_cwd()
     parser = argparse.ArgumentParser(description='Run QPE from a molecule JSON (qubit_hamiltonian).')
     parser.add_argument('molecule', nargs='?', default=None, help='Path to molecule JSON (qubit_hamiltonian).')
     parser.add_argument('--n', type=int, default=5, help='Number of phase (ancilla) qubits.')

@@ -2,6 +2,7 @@
 from pathlib import Path
 
 import argparse
+import os
 import time
 from contextlib import redirect_stdout
 
@@ -13,16 +14,30 @@ try:
     from .qpe_runner import run_qpe
     from .qpe_graph import plot
 except ImportError:
-    from io_utils import load_matrix_spec, build_unitary_from_hamiltonian
-    from matrix_utils import eigendecompose, unitary_eigenphases
-    from qpe_runner import run_qpe
-    from qpe_graph import plot
+    import sys
+
+    repo_root = Path(__file__).resolve().parents[2]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+
+    from qpe.qpe_code.io_utils import load_matrix_spec, build_unitary_from_hamiltonian
+    from qpe.qpe_code.matrix_utils import eigendecompose, unitary_eigenphases
+    from qpe.qpe_code.qpe_runner import run_qpe
+    from qpe.qpe_code.qpe_graph import plot
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _ensure_repo_root_cwd():
+    os.chdir(REPO_ROOT)
 
 
 def is_power_of_two(n):
     return (n & (n - 1) == 0) and n > 0
 
 def main():
+    _ensure_repo_root_cwd()
     parser = argparse.ArgumentParser(description="Run QPE from a Hamiltonian or Unitary JSON file.")
     parser.add_argument('--n', type=int, default=4, help='Number of phase (ancilla) qubits.')
     parser.add_argument('--shots', type=int, default=1024, help='Number of shots (measurements).')

@@ -4,14 +4,33 @@ from pathlib import Path
 import argparse
 import hashlib
 import json
+import os
 import time
 from contextlib import redirect_stdout
 
 import numpy as np
 
-from .analitical import analitical_minimum_energy, pstr_to_matrix
-from .vqe_graph import plot
-from .vqe_runner import run_vqe
+try:
+    from .analitical import analitical_minimum_energy, pstr_to_matrix
+    from .vqe_graph import plot
+    from .vqe_runner import run_vqe
+except ImportError:
+    import sys
+
+    repo_root = Path(__file__).resolve().parents[2]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+
+    from vqe.vqe_code.analitical import analitical_minimum_energy, pstr_to_matrix
+    from vqe.vqe_code.vqe_graph import plot
+    from vqe.vqe_code.vqe_runner import run_vqe
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _ensure_repo_root_cwd():
+    os.chdir(REPO_ROOT)
 
 
 def build_dense_hamiltonian(hamiltonian_dict):
@@ -204,6 +223,7 @@ def load_molecule_json(molecule_path: Path):
 
 
 def main(cli_args=None):
+    _ensure_repo_root_cwd()
     if cli_args is None:
         cli_args = argparse.Namespace(
             molecule="H2",
