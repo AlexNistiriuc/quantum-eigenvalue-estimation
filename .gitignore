@@ -1,3 +1,14 @@
 qpe/qpe_code/__pycache__/
 vqe/vqe_code/__pycache__/
+
+# Virtual environments
+.venv/
 venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor
+.vscode/

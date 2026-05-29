@@ -9,8 +9,39 @@ Simula l’**energia dello stato fondamentale** di semplici molecole (H₂, LiH)
 - Analisi di **convergenza** rispetto ai parametri e confronto con valori teorici.  
 - Supporto a Hamiltoniane molecolari da file `.json`.
 
+## 🔹 Struttura Entry Point (allineata a QPE)
+- `vqe/vqe_code/run_from_molecule.py`: esegue VQE partendo da JSON molecolare con `qubit_hamiltonian`.
+- `vqe/vqe_code/run_from_hamiltonian.py`: esegue VQE partendo da JSON Hamiltoniano generico (`H` matrix o `qubit_hamiltonian`).
+- `vqe/vqe_code/vqe_common.py`: funzioni comuni condivise tra entrypoint (`execute_vqe_run`, `build_dense_hamiltonian`).
+
+## 🔹 Esempi CLI
+- `python -m vqe.vqe_code.run_from_molecule H2 --shots 2048 --ansatz twolocal`
+- `python -m vqe.vqe_code.run_from_molecule LiH --ansatz uccsd --maxiter 1500`
+- `python -m vqe.vqe_code.run_from_hamiltonian molecules/Hamiltonian_8x8_example.json --shots 1024 --ansatz twolocal`
+
 ## 💡 Key Concepts
 - Parametrizzazione dello **stato quantistico variazionale**.  
 - Misurazione e media di osservabili qubit-based.  
 - **Ottimizzazione ibrida** tra hardware quantistico e classico.  
 - Analisi e **visualizzazione del processo di convergenza**.
+
+## Usage & Examples
+
+1. Activate the project virtualenv and install requirements (see root README).
+
+2. Run VQE from molecule JSON (example for H2):
+
+```powershell
+python -m vqe.vqe_code.run_from_molecule H2 --shots 2048 --ansatz twolocal
+```
+
+3. Run VQE from a generic Hamiltonian JSON:
+
+```powershell
+python -m vqe.vqe_code.run_from_hamiltonian molecules/Hamiltonian_8x8_example.json --shots 1024
+```
+
+4. Output and logs are saved under `vqe/vqe_results/<system>/<timestamp>/`.
+
+Notes:
+- Recommended entrypoints are the `run_from_*` modules; shared logic lives in `vqe_common.py`.

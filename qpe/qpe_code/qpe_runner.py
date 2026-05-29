@@ -2,6 +2,7 @@
 
 import numpy as np
 import qiskit as qk
+import warnings
 from typing import Tuple
 from qiskit.circuit.library import UnitaryGate, QFT
 from qiskit_aer import AerSimulator
@@ -39,10 +40,11 @@ def run_qpe(psi_vector: np.array,
         n: int, accuracy, number of phase registers
     """
 
-    print("....Creating circuit....")
     # local variables
     m = int(np.ceil(np.log2(len(U))))   # number of state regiter
-    U_gate = UnitaryGate(U, label='U')               # unitary operation as Qiskit's gate
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        U_gate = UnitaryGate(U, label='U')
 
     # create the registers
     phase_reg = qk.QuantumRegister(n, "phase")              # initial phase registers, set in |0>
@@ -51,6 +53,18 @@ def run_qpe(psi_vector: np.array,
     qc = qk.QuantumCircuit(phase_reg, state_reg, c_reg)     # quantum circuit
 
     # initialize the state register as psi
+    # Defensive normalization: Qiskit requires the statevector to be normalized
+    psi_vector = np.asarray(psi_vector, dtype=np.complex128)
+    norm = np.linalg.norm(psi_vector)
+    if norm == 0:
+        raise ValueError("Provided psi vector has zero norm")
+    # If norm differs from 1 beyond a tiny tolerance, normalize and warn
+    if not np.isclose(norm, 1.0, atol=1e-12):
+        warnings.warn(f"psi_vector is not normalized (norm={norm}). Normalizing before initialize.")
+        print(f"Original psi_vector: {psi_vector}")
+        psi_vector = psi_vector / norm
+        print(f"Normalized psi_vector: {psi_vector}")
+
     qc.initialize(psi_vector, state_reg)
 
     # put an Hadamard's gate on each phase register
@@ -61,7 +75,9 @@ def run_qpe(psi_vector: np.array,
     for k in range(n):
         number_of_gates = 2**k                                      # 2^k gates
         for i in range(number_of_gates):
-            qc.append(U_gate.control(1), [phase_reg[k]] + list(state_reg))  # U_gates on state_reg controlled by the k-th phase_reg
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", RuntimeWarning)
+                qc.append(U_gate.control(1), [phase_reg[k]] + list(state_reg))
     
     qc.barrier()
 
@@ -74,7 +90,6 @@ def run_qpe(psi_vector: np.array,
     qc.measure(phase_reg, c_reg)
 
     # simulations
-    print(f"....Starting simulations....")
     counts = simulator(qc, shots=shots)
 
     return counts, qc

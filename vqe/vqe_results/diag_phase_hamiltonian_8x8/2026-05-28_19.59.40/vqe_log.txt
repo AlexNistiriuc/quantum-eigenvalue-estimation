@@ -1,0 +1,27 @@
+==================================================
+    Ansatz configuration:
+    TwoLocal(num_qubits=3,
+             reps=3,
+             rotation_blocks=['ry'],
+             entanglement=linear,
+             entanglement_blocks=['cx'])
+==================================================
+Hamiltonian matrix shape: (8, 8)
+==================================================
+Analytical minimum energy for diag_phase_hamiltonian_8x8: 0.959838395908352 Hartree = 26.118533324791713 eV
+Elapsed time: 0.0000 s
+==================================================
+VQE Energy: 0.9598384051717043 Hartree = 26.11853357686037 eV
+Error: 9.263352307442574e-09 Hartree = 2.5206865757048405e-07 eV --> -9.650949937959207e-07%
+Shots: 1024
+Time elapsed: 6.2915 s
+Number of iterations: 384
+Energy list: [1.01696926342447, 1.742359809214014, 2.27040795513975, 1.963096216609474, 2.1550663954376796, 1.521459728495952, 1.9625829217319268, 2.4760020666116223, 2.269848325466602, 1.971369156564483] ...
+==================================================
+Best circuit (iteration 380) summary:
+{'depth': 10, 'size': 18, 'num_qubits': 3, 'num_clbits': 3, 'num_parameters': 0, 'count_ops': {'ry': 12, 'cx': 6}, 'circuit_hash': '382ceead149e415a3a88deb0e3060e9e'}
+Plot saved as: C:\Users\barto_h3naqoo\Desktop\Appunti\Quantum computing\quantum-vqe-simulator\vqe\vqe_results\diag_phase_hamiltonian_8x8\2026-05-28_19.59.40\vqe_convergence.png
+==================================================
+SUMMARY_START
+{"abs_err": 9.263352307442574e-09, "analytic_energy": 0.959838395908352, "ansatz": "twolocal", "best_energy": 0.9598384051717043, "elapsed_s": 6.291478633880615, "iterations": 384, "output_dir": "C:\\Users\\barto_h3naqoo\\Desktop\\Appunti\\Quantum computing\\quantum-vqe-simulator\\vqe\\vqe_results\\diag_phase_hamiltonian_8x8\\2026-05-28_19.59.40", "rel_err": 9.650949937959206e-09, "seed": null, "shots": 1024, "system": "diag_phase_hamiltonian_8x8"}
+SUMMARY_END

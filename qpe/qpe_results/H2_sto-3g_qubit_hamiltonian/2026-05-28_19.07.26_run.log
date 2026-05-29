@@ -1,0 +1,30 @@
+Loading molecule JSON from: C:\Users\barto_h3naqoo\Desktop\Appunti\Quantum computing\quantum-vqe-simulator\molecules\H2_sto-3g_qubit_hamiltonian.json
+Anti-Hermitian norm ||H - H^†||_F = 0.000e+00
+Constructed H from qubit_hamiltonian (n_qubits=4, dim=16).
+Trotterizing with steps=1, t=0.6, hbar=1.0.
+Inferred total electrons = 2 (from JSON n_elec=[1, 1])
+
+=== Best HF basis state for eigenstate 0 ===
+Best bitstring: 0101 (index 5) with overlap 0.969267
+Provided HF bitstring: 1001 (index 9) with overlap 0.000000
+NOTE: the provided HF bitstring differs from the best-overlap computational basis state.
+Recommendation: consider using the best bitstring as initial psi (higher overlap with target eigenstate).
+Hartree-Fock bitstring (leftmost = qubit n-1): 1001
+Using computational-basis index: 9
+
+=== Single run (molecule) ===
+Output directory: C:\Users\barto_h3naqoo\Desktop\Appunti\Quantum computing\quantum-vqe-simulator\qpe\qpe_results\H2_sto-3g_qubit_hamiltonian
+Running QPE...
+Most frequent index (peak) = 2 -> phi_peak = 0.125000
+Global weighted phi (all outcomes) = 0.133789
+Neighborhood (w=2) weighted phi = 0.101434
+Expected phase (overlap-weighted from H,psi) = 0.102966
+Best estimate chosen = neighbor_weighted -> phi = 0.101434 (circular dist = 1.531668e-03)
+Most frequent count: 35/64
+Circuit summary:
+{'depth': 18, 'size': 25, 'num_qubits': 8, 'num_clbits': 4, 'num_parameters': 0, 'count_ops': {'c-unitary': 15, 'h': 4, 'measure': 4, 'barrier': 3, 'initialize': 1, 'qft_dg': 1}, 'circuit_hash': 'f9e2290329ebcad4c1275a3afe0b1631'}
+Plot saved: C:\Users\barto_h3naqoo\Desktop\Appunti\Quantum computing\quantum-vqe-simulator\qpe\qpe_results\H2_sto-3g_qubit_hamiltonian\2026-05-28_19.07.34_molecule_single_run.png
+============================================================
+SUMMARY_START
+{"elapsed_s": 8.296333312988281, "most_freq_count": 35, "n_phase": 4, "output_dir": "C:\\Users\\barto_h3naqoo\\Desktop\\Appunti\\Quantum computing\\quantum-vqe-simulator\\qpe\\qpe_results\\H2_sto-3g_qubit_hamiltonian", "phase_diff": 0.0015316682994569453, "phi_expected": 0.10296609452896514, "phi_neighbor": 0.1014344262295082, "phi_peak": 0.125, "shots": 64, "system_or_file": "H2_sto-3g_qubit_hamiltonian.json"}
+SUMMARY_END

@@ -1,7 +1,9 @@
-# simulations.py
+ # simulations.py
 
 import qiskit as qk
 from qiskit_aer import AerSimulator
+import numpy as np
+from qiskit.quantum_info import Operator, Statevector
 
 def validate_pauli_string(pauli_str, qc):
     """
@@ -129,11 +131,16 @@ def optimized(qc, pauli_strings, shots):
     return results
 
 
-def simulation(qc, H_dict, shots):
+def simulation(qc, hamiltonian, shots):
     """
     Compute expected energy for given Hamiltonian using the quantum circuit.
     """
-    averages = optimized(qc, list(H_dict.keys()), shots)
-    #averages = not_optimized(qc, list(H_dict.keys()), shots)
-    energy = sum(H_dict[ps] * averages[ps] for ps in H_dict)
-    return energy
+    if isinstance(hamiltonian, dict):
+        averages = optimized(qc, list(hamiltonian.keys()), shots)
+        # averages = not_optimized(qc, list(hamiltonian.keys()), shots)
+        energy = sum(hamiltonian[ps] * averages[ps] for ps in hamiltonian)
+        return energy
+
+    H = np.asarray(hamiltonian, dtype=np.complex128)
+    psi = Statevector.from_instruction(qc)
+    return psi.expectation_value(Operator(H))
