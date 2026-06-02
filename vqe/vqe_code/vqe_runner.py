@@ -2,7 +2,7 @@
 
 import numpy as np
 from qiskit import ClassicalRegister
-from scipy.optimize import minimize
+from scipy.optimize import OptimizeResult, minimize
 import warnings
 
 try:
@@ -20,6 +20,12 @@ def run_vqe(
     num_elec,
     shots,
     ansatz_type="twolocal",
+    method="cobyla",
+    spsa_a=0.2,
+    spsa_c=0.1,
+    spsa_alpha=0.602,
+    spsa_gamma=0.101,
+    spsa_stability_offset=None,
     maxiter=2000,
     two_local_reps=3,
     seed=None,
@@ -40,6 +46,10 @@ def run_vqe(
             f"Unknown ansatz_type '{ansatz_type}'. Use one of: twolocal, uccsd, 1, 2"
         )
 
+    normalized_method = str(method).strip().lower()
+    if normalized_method not in {"cobyla", "spsa"}:
+        raise ValueError(f"Unknown optimization method '{method}'. Use one of: cobyla, spsa")
+
     if seed is not None:
         np.random.seed(int(seed))
 
@@ -59,7 +69,7 @@ def run_vqe(
     min_energy = float('inf')
     best_rep = -1
     
-    def objective(params):
+    def evaluate(params, *, record=True, iteration_label=None):
         nonlocal best_cirq, min_energy, best_rep, n_rep
         # Using the same ansatz, but with updated parameters
         parameterized_circuit = ansatz.assign_parameters(params)
@@ -70,22 +80,66 @@ def run_vqe(
         if abs(energy.imag) > 1e-8:
             warnings.warn(f"Energy has non-negligible imaginary part: {energy.imag}. Using real part.")
         energy = float(np.real(energy))
-        energies.append(energy)
+        if record:
+            energies.append(energy)
 
-        if energy < min_energy:
-            best_cirq = parameterized_circuit
-            min_energy = energy
-            best_rep = n_rep
-            print(f"\tIteration {n_rep} - Energy: {energy} - NEW BEST")
-        else:
-            print(f"\tIteration {n_rep} - Energy: {energy}")
+            current_rep = n_rep if iteration_label is None else iteration_label
+            if energy < min_energy:
+                best_cirq = parameterized_circuit
+                min_energy = energy
+                best_rep = current_rep
+                print(f"\tIteration {current_rep} - Energy: {energy} - NEW BEST")
+            else:
+                print(f"\tIteration {current_rep} - Energy: {energy}")
 
-        n_rep += 1
+            n_rep += 1
 
         return energy
+
+    def objective(params):
+        return evaluate(params, record=True)
+
+    def run_spsa(initial_params):
+        current_params = np.array(initial_params, dtype=float, copy=True)
+        current_energy = evaluate(current_params, record=True)
+
+        a = float(spsa_a)
+        c = float(spsa_c)
+        alpha = float(spsa_alpha)
+        gamma = float(spsa_gamma)
+        stability_offset = (
+            max(1.0, 0.1 * float(maxiter)) if spsa_stability_offset is None else float(spsa_stability_offset)
+        )
+
+        for iteration in range(int(maxiter)):
+            ak = a / ((iteration + 1 + stability_offset) ** alpha)
+            ck = c / ((iteration + 1) ** gamma)
+            perturbation = np.random.choice([-1.0, 1.0], size=current_params.shape)
+
+            params_plus = current_params + ck * perturbation
+            params_minus = current_params - ck * perturbation
+            energy_plus = evaluate(params_plus, record=False)
+            energy_minus = evaluate(params_minus, record=False)
+            gradient_estimate = ((energy_plus - energy_minus) / (2.0 * ck)) * perturbation
+
+            candidate_params = current_params - ak * gradient_estimate
+            current_energy = evaluate(candidate_params, record=True, iteration_label=iteration + 1)
+            current_params = candidate_params
+
+        return OptimizeResult(
+            x=current_params,
+            fun=current_energy,
+            nit=int(maxiter),
+            nfev=int(len(energies)),
+            success=True,
+            message="SPSA optimization completed.",
+        )
     
     
     print(f"....Starting simulations....")
-    result = minimize(objective, initial_parameters, method="COBYLA", options={"maxiter": int(maxiter)})
+    if normalized_method == "spsa":
+        result = run_spsa(initial_parameters)
+    else:
+        result = minimize(objective, initial_parameters, method="COBYLA", options={"maxiter": int(maxiter)})
 
     return result, energies, best_cirq, best_rep

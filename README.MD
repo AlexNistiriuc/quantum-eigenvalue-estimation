@@ -43,25 +43,25 @@ python -m pip install --upgrade pip setuptools wheel
 python -m pip install -r requirements.txt
 ```
 
-3. Run tests:
-
-```powershell
-python -m pytest -q
-```
-
-4. Run VQE (example):
+3. Run VQE (example):
 
 ```powershell
 python -m vqe.vqe_code.run_from_molecule H2 --shots 2048 --ansatz twolocal
 ```
 
-5. Run QPE (example):
+To run VQE with SPSA:
+
+```powershell
+python -m vqe.vqe_code.run_from_molecule H2 --method spsa --maxiter 400 --spsa-a 0.2 --spsa-c 0.1
+```
+
+4. Run QPE (example):
 
 ```powershell
 python -m qpe.qpe_code.run_from_hamiltonian molecules/Hamiltonian_8x8_example.json
 ```
 
-6. Run full VQE→QPE pipeline from `main.py` (example):
+5. Run full VQE→QPE pipeline from `main.py` (example):
 
 ```powershell
 python main.py --vqe-source molecule --vqe-input H2 --vqe-shots 1024 --vqe-ansatz twolocal --qpe-n 5 --qpe-shots 4096

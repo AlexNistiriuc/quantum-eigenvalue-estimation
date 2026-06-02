@@ -74,6 +74,12 @@ def execute_vqe_run(
     results_root,
     shots,
     ansatz,
+    method,
+    spsa_a,
+    spsa_c,
+    spsa_alpha,
+    spsa_gamma,
+    spsa_stability_offset,
     maxiter,
     two_local_reps,
     seed,
@@ -122,6 +128,12 @@ def execute_vqe_run(
             num_elec,
             shots=shots,
             ansatz_type=ansatz,
+            method=method,
+            spsa_a=spsa_a,
+            spsa_c=spsa_c,
+            spsa_alpha=spsa_alpha,
+            spsa_gamma=spsa_gamma,
+            spsa_stability_offset=spsa_stability_offset,
             maxiter=maxiter,
             two_local_reps=two_local_reps,
             seed=seed,
@@ -162,6 +174,12 @@ def execute_vqe_run(
                 "system": system_name,
                 "shots": int(shots),
                 "ansatz": str(ansatz),
+                "method": str(method),
+                "spsa_a": float(spsa_a),
+                "spsa_c": float(spsa_c),
+                "spsa_alpha": float(spsa_alpha),
+                "spsa_gamma": float(spsa_gamma),
+                "spsa_stability_offset": float(spsa_stability_offset) if spsa_stability_offset is not None else None,
                 "seed": seed,
                 "best_energy": best_energy,
                 "analytic_energy": float(min_energy),
@@ -195,7 +213,24 @@ def parse_args(argv=None):
         choices=["twolocal", "uccsd", "1", "2"],
         help="Ansatz type: twolocal or uccsd.",
     )
-    parser.add_argument("--maxiter", type=int, default=2000, help="Maximum COBYLA iterations.")
+    parser.add_argument(
+        "--method",
+        type=str,
+        default="cobyla",
+        choices=["cobyla", "spsa"],
+        help="Optimization method to use.",
+    )
+    parser.add_argument("--spsa-a", type=float, default=0.2, help="SPSA step-size coefficient a.")
+    parser.add_argument("--spsa-c", type=float, default=0.1, help="SPSA perturbation coefficient c.")
+    parser.add_argument("--spsa-alpha", type=float, default=0.602, help="SPSA decay exponent alpha.")
+    parser.add_argument("--spsa-gamma", type=float, default=0.101, help="SPSA perturbation decay exponent gamma.")
+    parser.add_argument(
+        "--spsa-stability-offset",
+        type=float,
+        default=None,
+        help="Optional SPSA stability offset A; if omitted, a heuristic based on maxiter is used.",
+    )
+    parser.add_argument("--maxiter", type=int, default=2000, help="Maximum optimization iterations.")
     parser.add_argument("--two-local-reps", type=int, default=3, help="Repetitions for TwoLocal ansatz.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducible initialization.")
     return parser.parse_args(argv)
@@ -229,6 +264,12 @@ def main(cli_args=None):
             molecule="H2",
             shots=1024,
             ansatz="twolocal",
+            method="cobyla",
+            spsa_a=0.2,
+            spsa_c=0.1,
+            spsa_alpha=0.602,
+            spsa_gamma=0.101,
+            spsa_stability_offset=None,
             maxiter=2000,
             two_local_reps=3,
             seed=None,
@@ -255,6 +296,12 @@ def main(cli_args=None):
         results_root=results_root,
         shots=int(cli_args.shots),
         ansatz=cli_args.ansatz,
+        method=cli_args.method,
+        spsa_a=float(cli_args.spsa_a),
+        spsa_c=float(cli_args.spsa_c),
+        spsa_alpha=float(cli_args.spsa_alpha),
+        spsa_gamma=float(cli_args.spsa_gamma),
+        spsa_stability_offset=(float(cli_args.spsa_stability_offset) if cli_args.spsa_stability_offset is not None else None),
         maxiter=int(cli_args.maxiter),
         two_local_reps=int(cli_args.two_local_reps),
         seed=cli_args.seed,

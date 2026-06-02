@@ -48,7 +48,24 @@ def parse_args(argv=None):
         choices=["twolocal", "uccsd", "1", "2"],
         help="VQE ansatz type.",
     )
-    parser.add_argument("--vqe-maxiter", type=int, default=2000, help="VQE COBYLA max iterations.")
+    parser.add_argument(
+        "--vqe-method",
+        type=str,
+        default="cobyla",
+        choices=["cobyla", "spsa"],
+        help="VQE optimization method.",
+    )
+    parser.add_argument("--vqe-spsa-a", type=float, default=0.2, help="VQE SPSA step-size coefficient a.")
+    parser.add_argument("--vqe-spsa-c", type=float, default=0.1, help="VQE SPSA perturbation coefficient c.")
+    parser.add_argument("--vqe-spsa-alpha", type=float, default=0.602, help="VQE SPSA decay exponent alpha.")
+    parser.add_argument("--vqe-spsa-gamma", type=float, default=0.101, help="VQE SPSA perturbation decay exponent gamma.")
+    parser.add_argument(
+        "--vqe-spsa-stability-offset",
+        type=float,
+        default=None,
+        help="VQE SPSA stability offset A; if omitted, a heuristic based on maxiter is used.",
+    )
+    parser.add_argument("--vqe-maxiter", type=int, default=2000, help="VQE max iterations.")
     parser.add_argument("--vqe-two-local-reps", type=int, default=3, help="VQE TwoLocal repetitions.")
     parser.add_argument("--vqe-seed", type=int, default=None, help="VQE random seed.")
     parser.add_argument("--vqe-pauli-tol", type=float, default=1e-10, help="Tolerance for matrix->Pauli pruning.")
@@ -111,6 +128,12 @@ def _run_vqe(args):
             molecule=args.vqe_input,
             shots=args.vqe_shots,
             ansatz=args.vqe_ansatz,
+            method=args.vqe_method,
+            spsa_a=args.vqe_spsa_a,
+            spsa_c=args.vqe_spsa_c,
+            spsa_alpha=args.vqe_spsa_alpha,
+            spsa_gamma=args.vqe_spsa_gamma,
+            spsa_stability_offset=args.vqe_spsa_stability_offset,
             maxiter=args.vqe_maxiter,
             two_local_reps=args.vqe_two_local_reps,
             seed=args.vqe_seed,
@@ -121,6 +144,12 @@ def _run_vqe(args):
         input=args.vqe_input,
         shots=args.vqe_shots,
         ansatz=args.vqe_ansatz,
+        method=args.vqe_method,
+        spsa_a=args.vqe_spsa_a,
+        spsa_c=args.vqe_spsa_c,
+        spsa_alpha=args.vqe_spsa_alpha,
+        spsa_gamma=args.vqe_spsa_gamma,
+        spsa_stability_offset=args.vqe_spsa_stability_offset,
         maxiter=args.vqe_maxiter,
         two_local_reps=args.vqe_two_local_reps,
         seed=args.vqe_seed,

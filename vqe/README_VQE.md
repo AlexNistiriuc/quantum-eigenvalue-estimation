@@ -18,6 +18,8 @@ Simula l’**energia dello stato fondamentale** di semplici molecole (H₂, LiH)
 - `python -m vqe.vqe_code.run_from_molecule H2 --shots 2048 --ansatz twolocal`
 - `python -m vqe.vqe_code.run_from_molecule LiH --ansatz uccsd --maxiter 1500`
 - `python -m vqe.vqe_code.run_from_hamiltonian molecules/Hamiltonian_8x8_example.json --shots 1024 --ansatz twolocal`
+- `python -m vqe.vqe_code.run_from_molecule H2 --method spsa --maxiter 400 --spsa-a 0.2 --spsa-c 0.1`
+- `python -m vqe.vqe_code.run_from_hamiltonian molecules/Hamiltonian_8x8_example.json --method spsa --maxiter 600 --spsa-stability-offset 60`
 
 ## 💡 Key Concepts
 - Parametrizzazione dello **stato quantistico variazionale**.  
@@ -33,6 +35,12 @@ Simula l’**energia dello stato fondamentale** di semplici molecole (H₂, LiH)
 
 ```powershell
 python -m vqe.vqe_code.run_from_molecule H2 --shots 2048 --ansatz twolocal
+```
+
+To use SPSA instead of COBYLA:
+
+```powershell
+python -m vqe.vqe_code.run_from_molecule H2 --method spsa --maxiter 400 --spsa-a 0.2 --spsa-c 0.1
 ```
 
 3. Run VQE from a generic Hamiltonian JSON:
