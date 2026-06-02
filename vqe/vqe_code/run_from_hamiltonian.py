@@ -323,7 +323,6 @@ def parse_args(argv=None):
         help="Optional SPSA stability offset A; if omitted, a heuristic based on maxiter is used.",
     )
     parser.add_argument("--maxiter", type=int, default=2000, help="Maximum optimization iterations.")
-    parser.add_argument("--two-local-reps", type=int, default=3, help="Repetitions for TwoLocal ansatz.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducible initialization.")
     parser.add_argument("--pauli-tol", type=float, default=1e-10, help="Tolerance for Pauli decomposition pruning.")
     parser.add_argument("--name", type=str, default=None, help="Optional override for output folder/system name.")

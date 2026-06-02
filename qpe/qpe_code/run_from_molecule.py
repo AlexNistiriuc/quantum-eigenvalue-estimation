@@ -20,7 +20,7 @@ except ImportError:
     if str(repo_root) not in sys.path:
         sys.path.insert(0, str(repo_root))
 
-    from qpe.qpe_code.io_utils import load_matrix_spec, build_unitary_from_hamiltonian
+    from qpe.qpe_code.io_utils import load_json, build_unitary_from_hamiltonian
     from qpe.qpe_code.qpe_runner import run_qpe
     from qpe.qpe_code.qpe_graph import plot
 
@@ -133,6 +133,7 @@ def main():
     parser.add_argument('--peak-window', type=int, default=2, help='Neighborhood radius around the peak to compute neighborhood averages (e.g. 1 includes peak±1).')
     parser.add_argument('--eigenstate-to-overlap', type=int, default=0, help="Index of the eigenstate (ordered by energy) you aim to overlap with (default=0 for ground state). Then the algorithm will report the best HF bitstring overlap with that eigenstate.")
     parser.add_argument('--vqe-asats', default=False, help='if set, take the psi state from the VQE ASATS output instead of the Hartree-Fock state. This is useful for testing how well QPE can refine a VQE state that is close to the target eigenstate.') #TBD
+    parser.add_argument('--use-trotter', action='store_true', help='If set, use the Trotterized unitary instead of the exact matrix exponential for the QPE simulation.')
     args = parser.parse_args()
 
     base_dir = Path(__file__).resolve().parent
@@ -312,7 +313,8 @@ def main():
             print('\n=== Single run (molecule) ===')
             print(f'Output directory: {results_root}')
             print('Running QPE...')
-            counts, circuit = run_qpe(psi, U_exact, n=args.n, shots=args.shots)
+            U_to_run = U if args.use_trotter else U_exact
+            counts, circuit = run_qpe(psi, U_to_run, n=args.n, shots=args.shots)
 
             counts_array = np.zeros(2 ** args.n, dtype=int)
             for bitstring, c in counts.items():
