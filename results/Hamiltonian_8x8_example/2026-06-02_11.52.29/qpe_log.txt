@@ -1,0 +1,100 @@
+================== PIPELINE DATA ==================
+vqe_source: hamiltonian
+vqe_input: C:\Users\barto_h3naqoo\Desktop\Appunti\Quantum computing\quantum-vqe-simulator\molecules\Hamiltonian_8x8_example.json
+vqe_shots: 1024
+vqe_ansatz: twolocal
+vqe_maxiter: 2000
+qpe_n: 5
+qpe_shots: 4096
+qpe_t: 6.2187823150914525
+qpe_hbar: 1.0
+qpe_peak_window: 2
+qpe_scale_factor: 0.95
+qpe_psi_source: vqe_asats
+qpe_run_all_eigenstates: True
+qpe_use_trotter: False
+qpe_trotter_steps: 3
+==================================================
+=============== QPE results (eigenstate_0) ===============
+Shots: 4096
+Time elapsed: 11.0253 s
+QPE phase: phi = 2/32 = 0.062500
+Most frequent count: 2368/4096
+Expected phase: 0.050000
+Phase diff (circular): 1.250000e-02
+Neighborhood phase estimate (window=2): 0.053825
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_1) ===============
+Shots: 4096
+Time elapsed: 11.4028 s
+QPE phase: phi = 2/32 = 0.062500
+Most frequent count: 4046/4096
+Expected phase: 0.064727
+Phase diff (circular): 2.227292e-03
+Neighborhood phase estimate (window=2): 0.062577
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_2) ===============
+Shots: 4096
+Time elapsed: 10.6692 s
+QPE phase: phi = 31/32 = 0.968750
+Most frequent count: 2547/4096
+Expected phase: 0.957083
+Phase diff (circular): 1.166744e-02
+Neighborhood phase estimate (window=2): 0.958534
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_3) ===============
+Shots: 4096
+Time elapsed: 11.5757 s
+QPE phase: phi = 1/32 = 0.031250
+Most frequent count: 2955/4096
+Expected phase: 0.040739
+Phase diff (circular): 9.488587e-03
+Neighborhood phase estimate (window=2): 0.035836
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_4) ===============
+Shots: 4096
+Time elapsed: 11.0256 s
+QPE phase: phi = 3/32 = 0.093750
+Most frequent count: 1995/4096
+Expected phase: 0.079676
+Phase diff (circular): 1.407393e-02
+Neighborhood phase estimate (window=2): 0.082383
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_5) ===============
+Shots: 4096
+Time elapsed: 11.6063 s
+QPE phase: phi = 1/32 = 0.031250
+Most frequent count: 4056/4096
+Expected phase: 0.033074
+Phase diff (circular): 1.823724e-03
+Neighborhood phase estimate (window=2): 0.031396
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_6) ===============
+Shots: 4096
+Time elapsed: 11.4229 s
+QPE phase: phi = 2/32 = 0.062500
+Most frequent count: 3118/4096
+Expected phase: 0.071552
+Phase diff (circular): 9.052116e-03
+Neighborhood phase estimate (window=2): 0.065439
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+=============== QPE results (eigenstate_7) ===============
+Shots: 4096
+Time elapsed: 10.9333 s
+QPE phase: phi = 2/32 = 0.062500
+Most frequent count: 2951/4096
+Expected phase: 0.072152
+Phase diff (circular): 9.651614e-03
+Neighborhood phase estimate (window=2): 0.066956
+Circuit summary:
+{'depth': 34, 'size': 43, 'num_qubits': 8, 'num_clbits': 5, 'num_parameters': 0, 'count_ops': {'c-unitary': 31, 'h': 5, 'measure': 5, 'barrier': 3, 'initialize': 1, 'IQFT': 1}, 'circuit_hash': '9a2bc30898d4799985584ff39ac0b7d1'}
+SUMMARY_START
+{"n_phase": 5, "n_runs": 8, "output_dir": "C:\\Users\\barto_h3naqoo\\Desktop\\Appunti\\Quantum computing\\quantum-vqe-simulator\\results\\Hamiltonian_8x8_example\\2026-06-02_11.52.29", "run_all_eigenstates": true, "runs": [{"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 11.025279998779297, "most_freq_count": 2368, "phase_diff": 0.012499999999999956, "phi_expected": 0.050000000000000044, "phi_neighbor": 0.053824921135646686, "phi_peak": 0.0625, "run_label": "eigenstate_0"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 11.402770042419434, "most_freq_count": 4046, "phase_diff": 0.0022272916355992045, "phi_expected": 0.0647272916355992, "phi_neighbor": 0.06257651811949069, "phi_peak": 0.0625, "run_label": "eigenstate_1"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 10.669164657592773, "most_freq_count": 2547, "phase_diff": 0.011667439920503675, "phi_expected": 0.9570825600794963, "phi_neighbor": 0.9585343260626398, "phi_peak": 0.96875, "run_label": "eigenstate_2"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 11.57569169998169, "most_freq_count": 2955, "phase_diff": 0.00948858735909619, "phi_expected": 0.04073858735909619, "phi_neighbor": 0.035835642649775665, "phi_peak": 0.03125, "run_label": "eigenstate_3"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 11.025562047958374, "most_freq_count": 1995, "phase_diff": 0.014073928788985945, "phi_expected": 0.07967607121101405, "phi_neighbor": 0.08238261672381958, "phi_peak": 0.09375, "run_label": "eigenstate_4"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 11.606332063674927, "most_freq_count": 4056, "phase_diff": 0.0018237236590632477, "phi_expected": 0.03307372365906325, "phi_neighbor": 0.03139552696078431, "phi_peak": 0.03125, "run_label": "eigenstate_5"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 11.422945261001587, "most_freq_count": 3118, "phase_diff": 0.009052115525436832, "phi_expected": 0.07155211552543683, "phi_neighbor": 0.06543899768101005, "phi_peak": 0.0625, "run_label": "eigenstate_6"}, {"circuit_summary": {"circuit_hash": "9a2bc30898d4799985584ff39ac0b7d1", "count_ops": {"IQFT": 1, "barrier": 3, "c-unitary": 31, "h": 5, "initialize": 1, "measure": 5}, "depth": 34, "num_clbits": 5, "num_parameters": 0, "num_qubits": 8, "size": 43}, "elapsed_s": 10.933265686035156, "most_freq_count": 2951, "phase_diff": 0.009651613996742192, "phi_expected": 0.07215161399674219, "phi_neighbor": 0.06695619824016563, "phi_peak": 0.0625, "run_label": "eigenstate_7"}], "shots": 4096, "system_or_file": "Hamiltonian_8x8_example", "vqe_ansatz": "twolocal", "vqe_source": "hamiltonian"}
+SUMMARY_END

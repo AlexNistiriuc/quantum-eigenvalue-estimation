@@ -111,6 +111,7 @@ def execute_vqe_run(
     maxiter,
     seed,
     exact_min_energy=None,
+    output_dir_override=None,
 ):
     if hamiltonian_matrix is not None:
         H = np.array(hamiltonian_matrix, dtype=np.complex128)
@@ -138,10 +139,13 @@ def execute_vqe_run(
     print(f"Minimum (analitical) energy level: {min_energy}\n" + "=" * 50)
     elapsed_analitical = end_time - start_time
 
-    results_root = Path(results_root)
-    results_root.mkdir(parents=True, exist_ok=True)
-    timestamp = time.strftime("%Y-%m-%d_%H.%M.%S")
-    output_dir = results_root / timestamp
+    if output_dir_override:
+        output_dir = Path(output_dir_override)
+    else:
+        results_root = Path(results_root)
+        results_root.mkdir(parents=True, exist_ok=True)
+        timestamp = time.strftime("%Y-%m-%d_%H.%M.%S")
+        output_dir = results_root / timestamp
     output_dir.mkdir(parents=True, exist_ok=True)
     log_path = output_dir / "vqe_log.txt"
 
@@ -367,7 +371,6 @@ def main(cli_args=None):
             spsa_gamma=0.101,
             spsa_stability_offset=None,
             maxiter=2000,
-            two_local_reps=3,
             seed=None,
         )
 
@@ -408,7 +411,6 @@ def main(cli_args=None):
         spsa_gamma=float(cli_args.spsa_gamma),
         spsa_stability_offset=(float(cli_args.spsa_stability_offset) if cli_args.spsa_stability_offset is not None else None),
         maxiter=int(cli_args.maxiter),
-        two_local_reps=int(cli_args.two_local_reps),
         seed=cli_args.seed,
     )
 

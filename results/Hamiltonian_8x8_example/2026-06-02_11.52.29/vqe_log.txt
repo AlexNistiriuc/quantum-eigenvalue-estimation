@@ -1,0 +1,27 @@
+==================================================
+    Ansatz configuration:
+    TwoLocal(num_qubits=3,
+             reps=3,
+             rotation_blocks=['ry'],
+             entanglement=linear,
+             entanglement_blocks=['cx'])
+==================================================
+Hamiltonian matrix shape: (8, 8)
+==================================================
+Analytical minimum energy for diag_phase_hamiltonian_8x8: 0.959838395908352 Hartree = 26.118533324791713 eV
+Elapsed time: 0.0028 s
+==================================================
+VQE Energy: 0.9598384151114085 Hartree = 26.118533847333502 eV
+Error: 1.9203056589311984e-08 Hartree = 5.225417899553334e-07 eV --> -2.0006551802023915e-06%
+Shots: 1024
+Time elapsed: 3.9197 s
+Number of iterations: 385
+Energy list: [1.1888097790464671, 1.8400386352604836, 3.038193586048692, 2.3952575202830775, 2.0215857111547826, 1.4856709619945803, 2.403524376458174, 2.9816821748898166, 3.038562003004322, 2.5014644986894954] ...
+==================================================
+Best circuit (iteration 375) summary:
+{'depth': 10, 'size': 18, 'num_qubits': 3, 'num_clbits': 3, 'num_parameters': 0, 'count_ops': {'ry': 12, 'cx': 6}, 'circuit_hash': '382ceead149e415a3a88deb0e3060e9e'}
+Plot saved as: C:\Users\barto_h3naqoo\Desktop\Appunti\Quantum computing\quantum-vqe-simulator\results\Hamiltonian_8x8_example\2026-06-02_11.52.29\vqe_convergence.png
+==================================================
+SUMMARY_START
+{"abs_err": 1.9203056589311984e-08, "analytic_energy": 0.959838395908352, "ansatz": "twolocal", "best_energy": 0.9598384151114085, "elapsed_s": 3.9197330474853516, "iterations": 385, "method": "cobyla", "output_dir": "C:\\Users\\barto_h3naqoo\\Desktop\\Appunti\\Quantum computing\\quantum-vqe-simulator\\results\\Hamiltonian_8x8_example\\2026-06-02_11.52.29", "rel_err": 2.0006551802023917e-08, "seed": null, "shots": 1024, "spsa_a": 0.2, "spsa_alpha": 0.602, "spsa_c": 0.1, "spsa_gamma": 0.101, "spsa_stability_offset": null, "system": "diag_phase_hamiltonian_8x8", "two_local_entanglement": "linear", "two_local_entanglement_blocks": ["cx"], "two_local_parameter_prefix": "theta", "two_local_reps": 3, "two_local_rotation_blocks": ["ry"], "uccsd_generalized": false, "uccsd_include_imaginary": true, "uccsd_preserve_spin": true, "uccsd_reps": 2}
+SUMMARY_END

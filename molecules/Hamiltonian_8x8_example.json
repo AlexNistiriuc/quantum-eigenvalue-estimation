@@ -1,6 +1,6 @@
 {
-  "name": "diag_phase_hamiltonian_16x16",
-  "description": "Diagonal 16x16 Hamiltonian . Use t=1 and h_bar = 1.0 so U = exp(-i H).",
+  "name": "diag_phase_hamiltonian_8x8",
+  "description": "Diagonal 8x8 Hamiltonian . Use t=1 and h_bar = 1.0 so U = exp(-i H).",
   "dimension": 8,
    "H": [
     [1, 0.2, 0, 0, 0, 0, 0, 0],

@@ -15,12 +15,14 @@ from scipy.linalg import expm
 from qpe.qpe_code.qpe_graph import plot
 from qpe.qpe_code.run_from_molecule import trotterize_unitary_from_terms
 from qpe.qpe_code.qpe_runner import run_qpe
-from vqe.vqe_code.run_from_hamiltonian import main as run_vqe_from_hamiltonian
-from vqe.vqe_code.run_from_molecule import main as run_vqe_from_molecule
+from vqe.vqe_code.run_from_hamiltonian import execute_vqe_run as execute_vqe_hamiltonian
+from vqe.vqe_code.run_from_hamiltonian import resolve_input_path as resolve_h_path
+from vqe.vqe_code.run_from_molecule import execute_vqe_run as execute_vqe_molecule
+from vqe.vqe_code.run_from_molecule import resolve_molecule_path as resolve_m_path
 
 
 REPO_ROOT = Path(__file__).resolve().parent
-QPE_RESULTS_DIR = REPO_ROOT / "qpe" / "qpe_results"
+RESULTS_DIR = REPO_ROOT / "results"
 
 
 def _ensure_repo_root_cwd():
@@ -158,6 +160,7 @@ def parse_args(argv=None):
         default=None,
         help="Comma-separated eigenvector indices used with --qpe-psi-coefs.",
     )
+    parser.add_argument("--qpe-use-trotter", action="store_true", help="Use Trotterized unitary instead of exact matrix exponential.")
     parser.add_argument("--qpe-trotter-steps", type=int, default=3, help="Compatibility option from qpe run_from_molecule (ignored in pipeline mode).")
     parser.add_argument("--qpe-hf-bits", type=str, default=None, help="Override psi with a computational basis bitstring.")
     parser.add_argument(
@@ -184,8 +187,15 @@ def parse_args(argv=None):
 def _resolve_pipeline_name(args):
     if args.vqe_name:
         return args.vqe_name
-    input_path = Path(str(args.vqe_input))
-    if input_path.suffix.lower() == ".json":
+    
+    # Risolviamo il percorso effettivo per dare il nome corretto alla cartella
+    module_dir = REPO_ROOT / "vqe" / "vqe_code"
+    if args.vqe_source == "molecule":
+        input_path = resolve_m_path(args.vqe_input, module_dir)
+    else:
+        input_path = resolve_h_path(args.vqe_input, module_dir)
+    
+    if input_path.exists():
         return input_path.stem
     return str(args.vqe_input)
 
@@ -268,10 +278,18 @@ def _load_qubit_hamiltonian(args):
     return None
 
 
-def _run_vqe(args):
+def _run_vqe(args, output_dir):
+    module_dir = REPO_ROOT / "vqe" / "vqe_code"
     if args.vqe_source == "molecule":
-        vqe_args = argparse.Namespace(
-            molecule=args.vqe_input,
+        mol_path = resolve_m_path(args.vqe_input, module_dir)
+        with open(mol_path, "r") as f:
+            spec = json.load(f)
+        return execute_vqe_molecule(
+            hamiltonian_dict=spec["qubit_hamiltonian"],
+            system_name=spec["name"],
+            num_spatial_orbitals=spec["n_orbs"],
+            num_elec=spec["n_elec"],
+            results_root=None,
             shots=args.vqe_shots,
             ansatz=args.vqe_ansatz,
             two_local_reps=args.vqe_two_local_reps,
@@ -291,11 +309,23 @@ def _run_vqe(args):
             spsa_stability_offset=args.vqe_spsa_stability_offset,
             maxiter=args.vqe_maxiter,
             seed=args.vqe_seed,
+            output_dir_override=output_dir
         )
-        return run_vqe_from_molecule(vqe_args)
-
-    vqe_args = argparse.Namespace(
-        input=args.vqe_input,
+    h_path = resolve_h_path(args.vqe_input, module_dir)
+    with open(h_path, "r") as f:
+        spec = json.load(f)
+    
+    # Logica minima per estrarre H o qubit_hamiltonian
+    h_dict = spec.get("qubit_hamiltonian")
+    h_mat = spec.get("H")
+    
+    return execute_vqe_hamiltonian(
+        hamiltonian_dict=h_dict,
+        hamiltonian_matrix=h_mat,
+        system_name=args.vqe_name or spec.get("name", h_path.stem),
+        num_spatial_orbitals=spec.get("n_orbs", 1),
+        num_elec=spec.get("n_elec", [1,1]),
+        results_root=None,
         shots=args.vqe_shots,
         ansatz=args.vqe_ansatz,
         two_local_reps=args.vqe_two_local_reps,
@@ -315,16 +345,20 @@ def _run_vqe(args):
         spsa_stability_offset=args.vqe_spsa_stability_offset,
         maxiter=args.vqe_maxiter,
         seed=args.vqe_seed,
-        pauli_tol=args.vqe_pauli_tol,
-        name=args.vqe_name,
+        output_dir_override=output_dir
     )
-    return run_vqe_from_hamiltonian(vqe_args)
 
 
 def main(argv=None):
     _ensure_repo_root_cwd()
     args = parse_args(argv)
-    H, min_energy, best_cirq, energy_scale = _run_vqe(args)
+
+    pipeline_name = _resolve_pipeline_name(args)
+    timestamp = time.strftime("%Y-%m-%d_%H.%M.%S")
+    output_dir = RESULTS_DIR / pipeline_name / timestamp
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    H, min_energy, best_cirq, energy_scale = _run_vqe(args, output_dir)
 
     if best_cirq is None:
         raise RuntimeError("VQE did not return a circuit to use as QPE input")
@@ -420,15 +454,11 @@ def main(argv=None):
     print("\n" + "=" * 18 + " STARTING QPE " + "=" * 18)
     n = int(args.qpe_n)
     shots = int(args.qpe_shots)
-    pipeline_name = _resolve_pipeline_name(args)
 
-    timestamp = time.strftime("%Y-%m-%d_%H.%M.%S")
-    output_dir = QPE_RESULTS_DIR / f"pipeline_{pipeline_name}" / timestamp
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = output_dir / "qpe_results.png"
+    qpe_plot_path = output_dir / "qpe_results.png"
     log_path = output_dir / "qpe_log.txt"
 
-    with open(log_path, "w", encoding="utf-8") as f:
+    with open(log_path, "a", encoding="utf-8") as f:
         with redirect_stdout(f):
             print("=" * 18 + " PIPELINE DATA " + "=" * 18)
             print(f"vqe_source: {args.vqe_source}")
@@ -528,7 +558,7 @@ def main(argv=None):
             overlap_value = float(abs(np.vdot(eigvecs[:, overlap_target], psi)) ** 2)
             print(f"Overlap |<E_{overlap_target}|psi>|^2 = {overlap_value:.6f}", file=f)
 
-            run = _run_one_qpe(psi, run_label="single", expected_e=None, plot_path=output_file)
+            run = _run_one_qpe(psi, run_label="single", expected_e=None, plot_path=qpe_plot_path)
             summary = {
                 "system_or_file": str(pipeline_name),
                 "n_phase": int(n),
@@ -549,7 +579,7 @@ def main(argv=None):
     if args.qpe_run_all_eigenstates:
         print(f"Plots saved in: {output_dir}")
     else:
-        print(f"Plot saved in: {output_file}")
+        print(f"Plot saved in: {qpe_plot_path}")
     print("\n" + "=" * 19 + " ENDING QPE " + "=" * 19 + "\n")
 
 
