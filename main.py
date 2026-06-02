@@ -26,6 +26,25 @@ def _ensure_repo_root_cwd():
     os.chdir(REPO_ROOT)
 
 
+def _parse_csv_list(value):
+    if value is None:
+        return None
+    if isinstance(value, (list, tuple)):
+        return [str(item).strip() for item in value if str(item).strip()]
+    return [item.strip() for item in str(value).split(",") if item.strip()]
+
+
+def _parse_bool(value):
+    if isinstance(value, bool):
+        return value
+    normalized = str(value).strip().lower()
+    if normalized in {"1", "true", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "n", "off"}:
+        return False
+    raise argparse.ArgumentTypeError(f"Expected a boolean value, got '{value}'.")
+
+
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description="Run end-to-end VQE -> QPE pipeline.")
 
@@ -47,6 +66,50 @@ def parse_args(argv=None):
         default="twolocal",
         choices=["twolocal", "uccsd", "1", "2"],
         help="VQE ansatz type.",
+    )
+    parser.add_argument("--vqe-two-local-reps", type=int, default=3, help="VQE TwoLocal repetitions.")
+    parser.add_argument(
+        "--vqe-two-local-rotation-blocks",
+        type=_parse_csv_list,
+        default=["ry"],
+        help="VQE TwoLocal rotation blocks, comma-separated.",
+    )
+    parser.add_argument(
+        "--vqe-two-local-entanglement",
+        type=str,
+        default="linear",
+        help="VQE TwoLocal entanglement pattern.",
+    )
+    parser.add_argument(
+        "--vqe-two-local-entanglement-blocks",
+        type=_parse_csv_list,
+        default=["cx"],
+        help="VQE TwoLocal entanglement blocks, comma-separated.",
+    )
+    parser.add_argument(
+        "--vqe-two-local-parameter-prefix",
+        type=str,
+        default="theta",
+        help="VQE TwoLocal parameter prefix.",
+    )
+    parser.add_argument("--vqe-uccsd-reps", type=int, default=2, help="VQE UCCSD repetitions.")
+    parser.add_argument(
+        "--vqe-uccsd-generalized",
+        type=_parse_bool,
+        default=False,
+        help="Enable generalized VQE UCCSD.",
+    )
+    parser.add_argument(
+        "--vqe-uccsd-preserve-spin",
+        type=_parse_bool,
+        default=True,
+        help="Preserve spin in VQE UCCSD.",
+    )
+    parser.add_argument(
+        "--vqe-uccsd-include-imaginary",
+        type=_parse_bool,
+        default=True,
+        help="Include imaginary excitations in VQE UCCSD.",
     )
     parser.add_argument(
         "--vqe-method",
@@ -128,6 +191,15 @@ def _run_vqe(args):
             molecule=args.vqe_input,
             shots=args.vqe_shots,
             ansatz=args.vqe_ansatz,
+            two_local_reps=args.vqe_two_local_reps,
+            two_local_rotation_blocks=args.vqe_two_local_rotation_blocks,
+            two_local_entanglement=args.vqe_two_local_entanglement,
+            two_local_entanglement_blocks=args.vqe_two_local_entanglement_blocks,
+            two_local_parameter_prefix=args.vqe_two_local_parameter_prefix,
+            uccsd_reps=args.vqe_uccsd_reps,
+            uccsd_generalized=args.vqe_uccsd_generalized,
+            uccsd_preserve_spin=args.vqe_uccsd_preserve_spin,
+            uccsd_include_imaginary=args.vqe_uccsd_include_imaginary,
             method=args.vqe_method,
             spsa_a=args.vqe_spsa_a,
             spsa_c=args.vqe_spsa_c,
@@ -144,6 +216,15 @@ def _run_vqe(args):
         input=args.vqe_input,
         shots=args.vqe_shots,
         ansatz=args.vqe_ansatz,
+        two_local_reps=args.vqe_two_local_reps,
+        two_local_rotation_blocks=args.vqe_two_local_rotation_blocks,
+        two_local_entanglement=args.vqe_two_local_entanglement,
+        two_local_entanglement_blocks=args.vqe_two_local_entanglement_blocks,
+        two_local_parameter_prefix=args.vqe_two_local_parameter_prefix,
+        uccsd_reps=args.vqe_uccsd_reps,
+        uccsd_generalized=args.vqe_uccsd_generalized,
+        uccsd_preserve_spin=args.vqe_uccsd_preserve_spin,
+        uccsd_include_imaginary=args.vqe_uccsd_include_imaginary,
         method=args.vqe_method,
         spsa_a=args.vqe_spsa_a,
         spsa_c=args.vqe_spsa_c,

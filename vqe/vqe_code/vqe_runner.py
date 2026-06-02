@@ -28,6 +28,14 @@ def run_vqe(
     spsa_stability_offset=None,
     maxiter=2000,
     two_local_reps=3,
+    two_local_rotation_blocks=("ry",),
+    two_local_entanglement="linear",
+    two_local_entanglement_blocks=("cx",),
+    two_local_parameter_prefix="theta",
+    uccsd_reps=2,
+    uccsd_generalized=False,
+    uccsd_preserve_spin=True,
+    uccsd_include_imaginary=True,
     seed=None,
 ):
     """
@@ -55,11 +63,27 @@ def run_vqe(
 
     print("....Creating ansatz....")
     if normalized_ansatz == "twolocal":
-        ansatz = create_TwoLocal(file, num_qubits=num_qubits, reps=two_local_reps)
+        ansatz = create_TwoLocal(
+            file,
+            num_qubits=num_qubits,
+            reps=two_local_reps,
+            rotation_blocks=list(two_local_rotation_blocks),
+            entanglement=two_local_entanglement,
+            entanglement_blocks=list(two_local_entanglement_blocks),
+            parameter_prefix=two_local_parameter_prefix,
+        )
         ansatz.add_register(ClassicalRegister(num_qubits, "c"))
         initial_parameters = np.random.normal(0, 0.1, ansatz.num_parameters)
     else:
-        ansatz = create_UCCSD(file, num_spatial_orbitals, num_elec)
+        ansatz = create_UCCSD(
+            file,
+            num_spatial_orbitals,
+            num_elec,
+            reps=uccsd_reps,
+            generalized=uccsd_generalized,
+            preserve_spin=uccsd_preserve_spin,
+            include_imaginary=uccsd_include_imaginary,
+        )
         ansatz.add_register(ClassicalRegister(num_qubits, "c"))
         initial_parameters = np.zeros(ansatz.num_parameters)
 

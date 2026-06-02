@@ -65,6 +65,25 @@ def _write_summary(file_obj, summary_dict):
     print("SUMMARY_END", file=file_obj)
 
 
+def _parse_csv_list(value):
+    if value is None:
+        return None
+    if isinstance(value, (list, tuple)):
+        return [str(item).strip() for item in value if str(item).strip()]
+    return [item.strip() for item in str(value).split(",") if item.strip()]
+
+
+def _parse_bool(value):
+    if isinstance(value, bool):
+        return value
+    normalized = str(value).strip().lower()
+    if normalized in {"1", "true", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "n", "off"}:
+        return False
+    raise argparse.ArgumentTypeError(f"Expected a boolean value, got '{value}'.")
+
+
 def execute_vqe_run(
     *,
     hamiltonian_dict=None,
@@ -75,6 +94,15 @@ def execute_vqe_run(
     results_root,
     shots,
     ansatz,
+    two_local_reps,
+    two_local_rotation_blocks,
+    two_local_entanglement,
+    two_local_entanglement_blocks,
+    two_local_parameter_prefix,
+    uccsd_reps,
+    uccsd_generalized,
+    uccsd_preserve_spin,
+    uccsd_include_imaginary,
     method,
     spsa_a,
     spsa_c,
@@ -82,7 +110,6 @@ def execute_vqe_run(
     spsa_gamma,
     spsa_stability_offset,
     maxiter,
-    two_local_reps,
     seed,
     exact_min_energy=None,
 ):
@@ -129,6 +156,15 @@ def execute_vqe_run(
             num_elec,
             shots=shots,
             ansatz_type=ansatz,
+            two_local_reps=two_local_reps,
+            two_local_rotation_blocks=two_local_rotation_blocks,
+            two_local_entanglement=two_local_entanglement,
+            two_local_entanglement_blocks=two_local_entanglement_blocks,
+            two_local_parameter_prefix=two_local_parameter_prefix,
+            uccsd_reps=uccsd_reps,
+            uccsd_generalized=uccsd_generalized,
+            uccsd_preserve_spin=uccsd_preserve_spin,
+            uccsd_include_imaginary=uccsd_include_imaginary,
             method=method,
             spsa_a=spsa_a,
             spsa_c=spsa_c,
@@ -136,7 +172,6 @@ def execute_vqe_run(
             spsa_gamma=spsa_gamma,
             spsa_stability_offset=spsa_stability_offset,
             maxiter=maxiter,
-            two_local_reps=two_local_reps,
             seed=seed,
         )
         end_time = time.time()
@@ -178,6 +213,15 @@ def execute_vqe_run(
                 "system": system_name,
                 "shots": int(shots),
                 "ansatz": str(ansatz),
+                "two_local_reps": int(two_local_reps),
+                "two_local_rotation_blocks": list(two_local_rotation_blocks),
+                "two_local_entanglement": str(two_local_entanglement),
+                "two_local_entanglement_blocks": list(two_local_entanglement_blocks),
+                "two_local_parameter_prefix": str(two_local_parameter_prefix),
+                "uccsd_reps": int(uccsd_reps),
+                "uccsd_generalized": bool(uccsd_generalized),
+                "uccsd_preserve_spin": bool(uccsd_preserve_spin),
+                "uccsd_include_imaginary": bool(uccsd_include_imaginary),
                 "method": str(method),
                 "spsa_a": float(spsa_a),
                 "spsa_c": float(spsa_c),
@@ -216,6 +260,50 @@ def parse_args(argv=None):
         default="twolocal",
         choices=["twolocal", "uccsd", "1", "2"],
         help="Ansatz type: twolocal or uccsd.",
+    )
+    parser.add_argument("--two-local-reps", type=int, default=3, help="Repetitions for TwoLocal ansatz.")
+    parser.add_argument(
+        "--two-local-rotation-blocks",
+        type=_parse_csv_list,
+        default=["ry"],
+        help="Comma-separated rotation blocks for TwoLocal.",
+    )
+    parser.add_argument(
+        "--two-local-entanglement",
+        type=str,
+        default="linear",
+        help="Entanglement pattern for TwoLocal.",
+    )
+    parser.add_argument(
+        "--two-local-entanglement-blocks",
+        type=_parse_csv_list,
+        default=["cx"],
+        help="Comma-separated entanglement blocks for TwoLocal.",
+    )
+    parser.add_argument(
+        "--two-local-parameter-prefix",
+        type=str,
+        default="theta",
+        help="Parameter prefix for TwoLocal.",
+    )
+    parser.add_argument("--uccsd-reps", type=int, default=2, help="Repetitions for UCCSD ansatz.")
+    parser.add_argument(
+        "--uccsd-generalized",
+        type=_parse_bool,
+        default=False,
+        help="Enable generalized UCCSD.",
+    )
+    parser.add_argument(
+        "--uccsd-preserve-spin",
+        type=_parse_bool,
+        default=True,
+        help="Preserve spin in UCCSD.",
+    )
+    parser.add_argument(
+        "--uccsd-include-imaginary",
+        type=_parse_bool,
+        default=True,
+        help="Include imaginary excitations in UCCSD.",
     )
     parser.add_argument(
         "--method",
@@ -272,6 +360,15 @@ def main(cli_args=None):
             input=None,
             shots=1024,
             ansatz="twolocal",
+            two_local_reps=3,
+            two_local_rotation_blocks=["ry"],
+            two_local_entanglement="linear",
+            two_local_entanglement_blocks=["cx"],
+            two_local_parameter_prefix="theta",
+            uccsd_reps=2,
+            uccsd_generalized=False,
+            uccsd_preserve_spin=True,
+            uccsd_include_imaginary=True,
             method="cobyla",
             spsa_a=0.2,
             spsa_c=0.1,
@@ -338,6 +435,15 @@ def main(cli_args=None):
         results_root=results_root,
         shots=int(cli_args.shots),
         ansatz=cli_args.ansatz,
+        two_local_reps=int(cli_args.two_local_reps),
+        two_local_rotation_blocks=cli_args.two_local_rotation_blocks,
+        two_local_entanglement=cli_args.two_local_entanglement,
+        two_local_entanglement_blocks=cli_args.two_local_entanglement_blocks,
+        two_local_parameter_prefix=cli_args.two_local_parameter_prefix,
+        uccsd_reps=int(cli_args.uccsd_reps),
+        uccsd_generalized=bool(cli_args.uccsd_generalized),
+        uccsd_preserve_spin=bool(cli_args.uccsd_preserve_spin),
+        uccsd_include_imaginary=bool(cli_args.uccsd_include_imaginary),
         method=cli_args.method,
         spsa_a=float(cli_args.spsa_a),
         spsa_c=float(cli_args.spsa_c),
