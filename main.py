@@ -135,6 +135,9 @@ def parse_args(argv=None):
     parser.add_argument("--vqe-seed", type=int, default=None, help="VQE random seed.")
     parser.add_argument("--vqe-pauli-tol", type=float, default=1e-10, help="Tolerance for matrix->Pauli pruning.")
     parser.add_argument("--vqe-name", type=str, default=None, help="Optional VQE system name override.")
+    parser.add_argument("--gpu", action="store_true", default=False, help="Use GPU backend for VQE simulations when available on the current device.")
+    parser.add_argument("--vqe-custatevec", type=_parse_bool, default=True, help="Enable cuStateVec GPU acceleration when using GPU (default: True).")
+    parser.add_argument("--vqe-batched-shots", type=_parse_bool, default=True, help="Enable GPU batched-shots optimization for improved throughput (default: True).")
 
     parser.add_argument("--qpe-n", type=int, default=5, help="QPE phase qubits.")
     parser.add_argument("--qpe-shots", type=int, default=4096, help="QPE shots.")
@@ -309,7 +312,10 @@ def _run_vqe(args, output_dir):
             spsa_stability_offset=args.vqe_spsa_stability_offset,
             maxiter=args.vqe_maxiter,
             seed=args.vqe_seed,
-            output_dir_override=output_dir
+            output_dir_override=output_dir,
+            use_gpu=args.gpu,
+            custatevec_enable=args.vqe_custatevec,
+            batched_shots_gpu=args.vqe_batched_shots,
         )
     h_path = resolve_h_path(args.vqe_input, module_dir)
     with open(h_path, "r") as f:
@@ -345,7 +351,10 @@ def _run_vqe(args, output_dir):
         spsa_stability_offset=args.vqe_spsa_stability_offset,
         maxiter=args.vqe_maxiter,
         seed=args.vqe_seed,
-        output_dir_override=output_dir
+        output_dir_override=output_dir,
+        use_gpu=args.gpu,
+        custatevec_enable=args.vqe_custatevec,
+        batched_shots_gpu=args.vqe_batched_shots,
     )
 
 

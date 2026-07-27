@@ -4,13 +4,10 @@ import numpy as np
 from qiskit import ClassicalRegister
 from scipy.optimize import OptimizeResult, minimize
 import warnings
+from vqe.vqe_code.simulator_backend import build_simulator
 
-try:
-    from .ansatz_factory import create_TwoLocal, create_UCCSD
-    from .simulations import simulation
-except ImportError:
-    from ansatz_factory import create_TwoLocal, create_UCCSD
-    from simulations import simulation
+from ansatz_factory import create_TwoLocal, create_UCCSD
+from simulations import simulation, simulation_batch
 
 def run_vqe(
     hamiltonian,
@@ -37,6 +34,9 @@ def run_vqe(
     uccsd_preserve_spin=True,
     uccsd_include_imaginary=True,
     seed=None,
+    use_gpu=False,
+    custatevec_enable=True,
+    batched_shots_gpu=True,
 ):
     """
     ansatz: Parametric circuit (TwoLocal)
@@ -92,18 +92,26 @@ def run_vqe(
     best_cirq = None
     min_energy = float('inf')
     best_rep = -1
+    simulator = build_simulator(
+            use_gpu=use_gpu,
+            custatevec_enable=custatevec_enable,
+            batched_shots_gpu=batched_shots_gpu,
+        )
     
+    def _to_real_energy(raw_energy):
+        # Ensure energy is a real scalar (numerical noise can introduce tiny imaginary parts)
+        raw_energy = complex(raw_energy)
+        if abs(raw_energy.imag) > 1e-8:
+            warnings.warn(f"Energy has non-negligible imaginary part: {raw_energy.imag}. Using real part.")
+        return float(np.real(raw_energy))
+
     def evaluate(params, *, record=True, iteration_label=None):
         nonlocal best_cirq, min_energy, best_rep, n_rep
         # Using the same ansatz, but with updated parameters
         parameterized_circuit = ansatz.assign_parameters(params)
 
-        energy = simulation(parameterized_circuit, hamiltonian, shots)
-        # Ensure energy is a real scalar (numerical noise can introduce tiny imaginary parts)
-        energy = complex(energy)
-        if abs(energy.imag) > 1e-8:
-            warnings.warn(f"Energy has non-negligible imaginary part: {energy.imag}. Using real part.")
-        energy = float(np.real(energy))
+        energy = simulation(parameterized_circuit, hamiltonian, shots, simulator=simulator)
+        energy = _to_real_energy(energy)
         if record:
             energies.append(energy)
 
@@ -122,6 +130,20 @@ def run_vqe(
 
     def objective(params):
         return evaluate(params, record=True)
+
+    def evaluate_pair(params_a, params_b):
+        """
+        Compute energies for two parameter sets (e.g. SPSA's plus/minus
+        perturbations) in a single batched Aer job instead of two separate
+        simulation() calls. Never recorded (mirrors the previous
+        record=False behavior for plus/minus evaluations).
+        """
+        circuit_a = ansatz.assign_parameters(params_a)
+        circuit_b = ansatz.assign_parameters(params_b)
+        energy_a, energy_b = simulation_batch(
+            [circuit_a, circuit_b], hamiltonian, shots, simulator=simulator
+        )
+        return _to_real_energy(energy_a), _to_real_energy(energy_b)
 
     def run_spsa(initial_params):
         current_params = np.array(initial_params, dtype=float, copy=True)
@@ -142,8 +164,7 @@ def run_vqe(
 
             params_plus = current_params + ck * perturbation
             params_minus = current_params - ck * perturbation
-            energy_plus = evaluate(params_plus, record=False)
-            energy_minus = evaluate(params_minus, record=False)
+            energy_plus, energy_minus = evaluate_pair(params_plus, params_minus)
             gradient_estimate = ((energy_plus - energy_minus) / (2.0 * ck)) * perturbation
 
             candidate_params = current_params - ak * gradient_estimate

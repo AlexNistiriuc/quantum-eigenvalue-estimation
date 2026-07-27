@@ -113,6 +113,9 @@ def execute_vqe_run(
     seed,
     exact_min_energy=None,
     output_dir_override=None,
+    use_gpu=False,
+    custatevec_enable=True,
+    batched_shots_gpu=True,
 ):
     if hamiltonian_matrix is not None:
         H = np.array(hamiltonian_matrix, dtype=np.complex128)
@@ -177,6 +180,9 @@ def execute_vqe_run(
             spsa_stability_offset=spsa_stability_offset,
             maxiter=maxiter,
             seed=seed,
+            use_gpu=use_gpu,
+            custatevec_enable=custatevec_enable,
+            batched_shots_gpu=batched_shots_gpu,
         )
         end_time = time.time()
         elapsed_vqe = end_time - start_time
@@ -330,6 +336,24 @@ def parse_args(argv=None):
     parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducible initialization.")
     parser.add_argument("--pauli-tol", type=float, default=1e-10, help="Tolerance for Pauli decomposition pruning.")
     parser.add_argument("--name", type=str, default=None, help="Optional override for output folder/system name.")
+    parser.add_argument(
+        "--gpu",
+        action="store_true",
+        default=False,
+        help="Use GPU backend for VQE simulations when available on the current device.",
+    )
+    parser.add_argument(
+        "--vqe-custatevec",
+        type=_parse_bool,
+        default=True,
+        help="Enable cuStateVec GPU acceleration when using GPU (default: True).",
+    )
+    parser.add_argument(
+        "--vqe-batched-shots",
+        type=_parse_bool,
+        default=True,
+        help="Enable GPU batched-shots optimization for improved throughput (default: True).",
+    )
     return parser.parse_args(argv)
 
 
@@ -382,6 +406,9 @@ def main(cli_args=None):
             seed=None,
             pauli_tol=1e-10,
             name=None,
+            gpu=False,
+            vqe_custatevec=True,
+            vqe_batched_shots=True,
         )
 
     module_dir = Path(__file__).resolve().parent
@@ -455,6 +482,9 @@ def main(cli_args=None):
         maxiter=int(cli_args.maxiter),
         seed=cli_args.seed,
         exact_min_energy=exact_min,
+        use_gpu=bool(cli_args.gpu),
+        custatevec_enable=bool(cli_args.vqe_custatevec),
+        batched_shots_gpu=bool(cli_args.vqe_batched_shots),
     )
 
 
